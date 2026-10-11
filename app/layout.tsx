@@ -28,18 +28,19 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Namandeep Tripathi — Senior Frontend Engineer & Creative Technologist',
+  title: 'Namandeep Tripathi — Developer Portfolio',
   description:
-    'Portfolio of Namandeep Tripathi. Engineering cinematic digital interfaces, high-throughput systems, and selective 3D WebGL experiences.',
+    'Portfolio of Namandeep Tripathi. Developer building AI-powered systems, intelligent tools, and interactive digital experiences.',
   keywords: [
-    'Frontend Architect',
-    'Creative Technologist',
-    'Three.js',
-    'WebGL',
+    'Software Developer',
+    'Full Stack',
     'Next.js',
     'React',
     'TypeScript',
-    'Cinematic UI',
+    'Three.js',
+    'WebGL',
+    'AI Tools',
+    'Interactive Systems',
   ],
   authors: [{ name: 'Namandeep Tripathi' }],
 };

@@ -22,7 +22,7 @@ export const ContactSection: React.FC = () => {
               Initiate Transmission
             </h2>
             <p className="mt-4 text-base sm:text-lg text-[#9BA3BF] font-sans">
-              Open for senior frontend architecture initiatives, experimental creative technology collaborations, and select contracts.
+              Open for software engineering initiatives, intelligent tooling collaborations, and select project opportunities.
             </p>
           </Reveal>
         </div>

@@ -55,7 +55,7 @@ export const NavigationDock: React.FC = () => {
           className="flex items-center gap-2 pl-2 pr-3 py-1.5 text-xs font-mono font-bold tracking-tight text-[#F1F2FA] hover:text-[#48BFFF] transition-colors"
         >
           <span className="w-2 h-2 rounded-full bg-[#8065FF] shadow-[0_0_8px_#8065FF]" />
-          <span className="hidden sm:inline">NT.SYSTEMS</span>
+          <span className="hidden sm:inline">BUILD WITH NAMAN</span>
         </a>
 
         <div className="h-4 w-px bg-[#F1F2FA]/10 mx-1 hidden sm:block" />
@@ -85,16 +85,27 @@ export const NavigationDock: React.FC = () => {
         <div className="h-4 w-px bg-[#F1F2FA]/10 mx-1" />
 
         {/* Resume Action */}
-        <a
-          href={profileData.resumeUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono text-[#48BFFF] bg-[#48BFFF]/10 border border-[#48BFFF]/30 hover:bg-[#48BFFF]/20 transition-colors"
-          title="Resume link placeholder"
-        >
-          <FileText className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">CV</span>
-        </a>
+        {profileData.resumeUrl && !profileData.resumeUrl.includes('[Add-Resume-URL]') ? (
+          <a
+            href={profileData.resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono text-[#48BFFF] bg-[#48BFFF]/10 border border-[#48BFFF]/30 hover:bg-[#48BFFF]/20 transition-colors"
+            title="View résumé"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">CV</span>
+          </a>
+        ) : (
+          <span
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-mono text-[#9BA3BF]/60 bg-[#151A2C]/40 border border-[#F1F2FA]/5 cursor-not-allowed select-none"
+            title="Résumé coming soon"
+            aria-disabled="true"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">CV (Soon)</span>
+          </span>
+        )}
       </motion.nav>
     </header>
   );

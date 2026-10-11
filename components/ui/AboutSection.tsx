@@ -3,7 +3,8 @@
 import React from 'react';
 import { profileData } from '@/data/profile';
 import { Reveal } from '@/components/motion/Reveal';
-import { User, Cpu, MapPin, Zap } from 'lucide-react';
+import { User, MapPin, Zap } from 'lucide-react';
+import { SkillsExplorer } from '@/components/ui/SkillsExplorer';
 
 export const AboutSection: React.FC = () => {
   return (
@@ -51,41 +52,9 @@ export const AboutSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Skills & Stack Section */}
+        {/* Skills & Stack Section — Interactive Skills Explorer */}
         <div id="skills" className="pt-8">
-          <Reveal>
-            <div className="flex items-center gap-2 mb-3 text-xs font-mono text-[#48BFFF]">
-              <Cpu className="w-3.5 h-3.5" />
-              <span className="uppercase tracking-widest">Technical Arsenal</span>
-            </div>
-            <h3 className="text-2xl sm:text-3xl font-display font-bold text-[#F1F2FA] mb-10">
-              Stack & Capabilities
-            </h3>
-          </Reveal>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {profileData.skills.map((group, idx) => (
-              <Reveal key={group.category} delay={idx * 0.1}>
-                <div className="p-6 rounded-xl bg-[#151A2C]/40 border border-[#F1F2FA]/10 hover:border-[#8065FF]/40 transition-all h-full">
-                  <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-[#8065FF] mb-4 flex items-center justify-between">
-                    <span>{group.category}</span>
-                    <span className="text-[10px] text-[#9BA3BF]">[{group.items.length}]</span>
-                  </h4>
-                  <ul className="space-y-2.5">
-                    {group.items.map((skill) => (
-                      <li
-                        key={skill}
-                        className="text-xs sm:text-sm text-[#CCD0E5] flex items-center gap-2"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-sm bg-[#48BFFF]/60" />
-                        <span>{skill}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          <SkillsExplorer />
         </div>
       </div>
     </section>
