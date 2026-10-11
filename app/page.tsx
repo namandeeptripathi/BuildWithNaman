@@ -4,6 +4,7 @@ import { HeroCanvasLoader } from '@/components/3d/HeroCanvasLoader';
 import { SelectedWorkSection } from '@/components/ui/SelectedWorkSection';
 import { ManifestoSection } from '@/components/ui/ManifestoSection';
 import { AboutSection } from '@/components/ui/AboutSection';
+import { DeveloperTerminal } from '@/components/ui/DeveloperTerminal';
 import { ContactSection } from '@/components/ui/ContactSection';
 import { Reveal } from '@/components/motion/Reveal';
 import { profileData } from '@/data/profile';
@@ -132,6 +133,9 @@ export default function Home() {
 
         {/* ABOUT & SKILLS SECTION */}
         <AboutSection />
+
+        {/* INTERACTIVE DEVELOPER TERMINAL */}
+        <DeveloperTerminal />
 
         {/* CONTACT SECTION & FOOTER */}
         <ContactSection />
