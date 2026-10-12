@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useReducedMotion } from 'motion/react';
+import { motion, useReducedMotion, useTransform, useMotionValue, MotionValue } from 'motion/react';
 
 interface NodeData {
   id: string;
@@ -60,8 +60,19 @@ const EDGES = [
   { from: 'discovery', to: 'evidence' },
 ];
 
-export const OrgTraceVisual: React.FC = () => {
+interface OrgTraceVisualProps {
+  scrollProgress?: MotionValue<number>;
+}
+
+export const OrgTraceVisual: React.FC<OrgTraceVisualProps> = ({ scrollProgress }) => {
   const shouldReduceMotion = useReducedMotion();
+  const fallbackProgress = useMotionValue(0.5);
+  const activeProgress = scrollProgress || fallbackProgress;
+
+  // Scroll-driven subtle constellation dynamics
+  const constellationRotate = useTransform(activeProgress, [0, 0.5, 1], [-3.5, 0, 3.5]);
+  const constellationScale = useTransform(activeProgress, [0, 0.5, 1], [0.94, 1.03, 0.96]);
+  const ambientGlowOpacity = useTransform(activeProgress, [0, 0.5, 1], [0.1, 0.28, 0.1]);
 
   // Pulse timings staggered for calm, non-synchronous circulation of light
   const pulseConfigs = [
@@ -74,26 +85,35 @@ export const OrgTraceVisual: React.FC = () => {
   ];
 
   return (
-    <div className="relative rounded-2xl bg-[#0B0E1B]/60 border border-[#8065FF]/15 overflow-hidden shadow-2xl backdrop-blur-xl group transition-all duration-700 hover:border-[#8065FF]/30">
-      {/* Ambient background glow */}
-      <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#8065FF]/10 blur-3xl transition-opacity duration-700 group-hover:bg-[#8065FF]/15" />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#48BFFF]/10 blur-3xl transition-opacity duration-700 group-hover:bg-[#48BFFF]/15" />
+    <div className="relative w-full rounded-3xl bg-[#080B17]/75 border border-[#8065FF]/20 overflow-hidden shadow-[0_20px_60px_-15px_rgba(128,101,255,0.18)] backdrop-blur-2xl group transition-all duration-700 hover:border-[#8065FF]/40">
+      {/* Ambient background glow - coordinated with scroll */}
+      <motion.div
+        style={{ opacity: shouldReduceMotion ? 0.12 : ambientGlowOpacity }}
+        className="pointer-events-none absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#8065FF] blur-[120px] transition-opacity duration-700"
+      />
+      <div className="pointer-events-none absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-[#48BFFF]/15 blur-[120px] transition-opacity duration-700 group-hover:bg-[#48BFFF]/25" />
 
-      {/* Pure SVG Constellation Canvas */}
-      <div className="relative p-4 sm:p-6 select-none">
+      {/* Pure SVG Constellation Canvas with subtle scroll-driven rotation and scale */}
+      <motion.div
+        style={{
+          rotate: shouldReduceMotion ? 0 : constellationRotate,
+          scale: shouldReduceMotion ? 1 : constellationScale,
+        }}
+        className="relative p-4 sm:p-8 select-none origin-center"
+      >
         <svg
-          viewBox="0 0 600 370"
-          className="w-full h-auto max-h-[350px]"
+          viewBox="0 0 600 380"
+          className="w-full h-auto max-h-[460px] lg:max-h-[520px]"
           style={{ overflow: 'visible' }}
         >
           <defs>
             <radialGradient id="orgtrace-grid-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#8065FF" stopOpacity="0.15" />
+              <stop offset="0%" stopColor="#8065FF" stopOpacity="0.22" />
               <stop offset="100%" stopColor="#080A12" stopOpacity="0" />
             </radialGradient>
             <linearGradient id="orgtrace-line-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#8065FF" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#48BFFF" stopOpacity="0.5" />
+              <stop offset="0%" stopColor="#8065FF" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#48BFFF" stopOpacity="0.6" />
             </linearGradient>
             <filter id="orgtrace-glow" x="-30%" y="-30%" width="160%" height="160%">
               <feGaussianBlur stdDeviation="2.5" result="blur" />
@@ -105,14 +125,15 @@ export const OrgTraceVisual: React.FC = () => {
             </filter>
           </defs>
 
-          {/* Background ambient radial circles */}
-          <circle cx="300" cy="190" r="160" fill="none" stroke="#F1F2FA" strokeOpacity="0.03" strokeDasharray="3 3" />
-          <circle cx="300" cy="190" r="100" fill="none" stroke="#8065FF" strokeOpacity="0.06" />
-          <circle cx="300" cy="190" r="45" fill="url(#orgtrace-grid-glow)" />
+          {/* Deep celestial coordinate orbits */}
+          <circle cx="300" cy="190" r="230" fill="none" stroke="#F1F2FA" strokeOpacity="0.02" strokeDasharray="4 6" />
+          <circle cx="300" cy="190" r="160" fill="none" stroke="#F1F2FA" strokeOpacity="0.035" strokeDasharray="3 3" />
+          <circle cx="300" cy="190" r="100" fill="none" stroke="#8065FF" strokeOpacity="0.08" />
+          <circle cx="300" cy="190" r="50" fill="url(#orgtrace-grid-glow)" />
 
           {/* Coordinate grid axes */}
-          <line x1="100" y1="190" x2="500" y2="190" stroke="#F1F2FA" strokeOpacity="0.03" />
-          <line x1="300" y1="40" x2="300" y2="340" stroke="#F1F2FA" strokeOpacity="0.03" />
+          <line x1="80" y1="190" x2="520" y2="190" stroke="#F1F2FA" strokeOpacity="0.035" />
+          <line x1="300" y1="30" x2="300" y2="350" stroke="#F1F2FA" strokeOpacity="0.035" />
 
           {/* Edges / Relationship connectors */}
           {EDGES.map((edge, idx) => {
@@ -248,7 +269,7 @@ export const OrgTraceVisual: React.FC = () => {
             );
           })}
         </svg>
-      </div>
+      </motion.div>
     </div>
   );
 };

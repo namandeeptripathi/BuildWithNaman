@@ -10,6 +10,7 @@ export const HeroScene: React.FC = () => {
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pointerRef = useRef({ x: 0, y: 0 });
+  const scrollRef = useRef(0);
 
   useEffect(() => {
     // Check WebGL availability
@@ -44,10 +45,28 @@ export const HeroScene: React.FC = () => {
     };
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
+    // Scroll progress tracking normalized across Hero runway
+    const handleScroll = () => {
+      const hero = document.getElementById('hero');
+      if (!hero) {
+        scrollRef.current = 0;
+        return;
+      }
+      const rect = hero.getBoundingClientRect();
+      const heroScrollDistance = rect.height - window.innerHeight;
+      const progress = heroScrollDistance > 0
+        ? Math.max(0, Math.min(1.5, -rect.top / heroScrollDistance))
+        : Math.max(0, Math.min(1.5, -rect.top / window.innerHeight));
+      scrollRef.current = progress;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
     return () => {
       motionQuery.removeEventListener('change', motionHandler);
       window.removeEventListener('resize', checkSize);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -85,6 +104,7 @@ export const HeroScene: React.FC = () => {
           {/* Procedural 3D Cosmic Core Sculpture */}
           <CosmicCore
             pointerRef={pointerRef}
+            scrollRef={scrollRef}
             isReducedMotion={isReducedMotion}
             isMobile={isMobile}
           />

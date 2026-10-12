@@ -7,15 +7,18 @@ import * as THREE from 'three';
 
 interface CosmicCoreProps {
   pointerRef: React.RefObject<{ x: number; y: number }>;
+  scrollRef?: React.RefObject<number>;
   isReducedMotion: boolean;
   isMobile: boolean;
 }
 
 export const CosmicCore: React.FC<CosmicCoreProps> = ({
   pointerRef,
+  scrollRef,
   isReducedMotion,
   isMobile,
 }) => {
+  const rootGroupRef = useRef<THREE.Group>(null);
   const groupRef = useRef<THREE.Group>(null);
   const outerCrystalRef = useRef<THREE.Mesh>(null);
   const innerGemRef = useRef<THREE.Mesh>(null);
@@ -30,24 +33,45 @@ export const CosmicCore: React.FC<CosmicCoreProps> = ({
 
   // Responsive focal positioning based on canvas viewport
   const isNarrow = viewport.width < 5.8;
-  const targetX = isNarrow ? 0 : Math.min(viewport.width * 0.28, 2.15);
-  const targetY = isNarrow ? 0.35 : 0;
-  const scaleMultiplier = isNarrow ? 0.72 : 0.95;
+  const baseTargetX = isNarrow ? 0 : Math.min(viewport.width * 0.28, 2.15);
+  const baseTargetY = isNarrow ? 0.35 : 0;
+  const baseScale = isNarrow ? 0.72 : 0.95;
 
   useFrame((state, delta) => {
-    // Deliberate pointer parallax with weighted damping
-    if (groupRef.current && !isReducedMotion && pointerRef.current) {
-      const targetRotX = pointerRef.current.y * 0.22;
-      const targetRotY = pointerRef.current.x * 0.28;
+    const scroll = (!isReducedMotion && scrollRef?.current) ? scrollRef.current : 0;
+
+    // Scroll-driven 3D translation & scale: Crystal recedes into deep cosmic space as page scrolls down
+    if (rootGroupRef.current) {
+      const scrollTargetX = isNarrow ? 0 : baseTargetX * Math.max(0, 1 - scroll * 0.65);
+      const scrollTargetY = baseTargetY + scroll * 1.1;
+      const scrollTargetZ = -scroll * 3.4;
+      const scrollTargetScale = baseScale * Math.max(0.68, 1 - scroll * 0.26);
+
+      rootGroupRef.current.position.x = THREE.MathUtils.lerp(rootGroupRef.current.position.x, scrollTargetX, 0.06);
+      rootGroupRef.current.position.y = THREE.MathUtils.lerp(rootGroupRef.current.position.y, scrollTargetY, 0.06);
+      rootGroupRef.current.position.z = THREE.MathUtils.lerp(rootGroupRef.current.position.z, scrollTargetZ, 0.06);
+      rootGroupRef.current.scale.setScalar(
+        THREE.MathUtils.lerp(rootGroupRef.current.scale.x, scrollTargetScale, 0.06)
+      );
+    }
+
+    // Pointer parallax + Scroll-driven tumbling rotation
+    if (groupRef.current && !isReducedMotion) {
+      const ptrX = pointerRef.current?.x ?? 0;
+      const ptrY = pointerRef.current?.y ?? 0;
+
+      const targetRotX = (ptrY * 0.22) + (scroll * Math.PI * 0.7);
+      const targetRotY = (ptrX * 0.28) + (scroll * Math.PI * 1.1);
+
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
         groupRef.current.rotation.x,
         targetRotX,
-        0.04
+        0.05
       );
       groupRef.current.rotation.y = THREE.MathUtils.lerp(
         groupRef.current.rotation.y,
         targetRotY,
-        0.04
+        0.05
       );
     }
 
@@ -55,14 +79,14 @@ export const CosmicCore: React.FC<CosmicCoreProps> = ({
 
     // Outer prismatic crystal: slow, stately rotation catching faceted specular gleams
     if (outerCrystalRef.current) {
-      outerCrystalRef.current.rotation.y += delta * 0.2;
-      outerCrystalRef.current.rotation.x += delta * 0.12;
+      outerCrystalRef.current.rotation.y += delta * (0.2 + scroll * 0.4);
+      outerCrystalRef.current.rotation.x += delta * (0.12 + scroll * 0.25);
     }
 
     // Inner luminescent gem: counter-rotation creating optical refraction depth
     if (innerGemRef.current) {
-      innerGemRef.current.rotation.y -= delta * 0.35;
-      innerGemRef.current.rotation.z += delta * 0.22;
+      innerGemRef.current.rotation.y -= delta * (0.35 + scroll * 0.5);
+      innerGemRef.current.rotation.z += delta * (0.22 + scroll * 0.3);
     }
 
     // Outer architectural lattice: breathing scale and counter-spin
@@ -75,25 +99,25 @@ export const CosmicCore: React.FC<CosmicCoreProps> = ({
 
     // Multi-axis orbital rings
     if (ring1Ref.current) {
-      ring1Ref.current.rotation.z += delta * 0.2;
+      ring1Ref.current.rotation.z += delta * (0.2 + scroll * 0.3);
     }
     if (ring2Ref.current) {
-      ring2Ref.current.rotation.z -= delta * 0.16;
+      ring2Ref.current.rotation.z -= delta * (0.16 + scroll * 0.25);
     }
     if (ring3Ref.current) {
-      ring3Ref.current.rotation.z += delta * 0.1;
+      ring3Ref.current.rotation.z += delta * (0.1 + scroll * 0.15);
     }
 
     // Orbital satellite beacons
     if (satellite1Ref.current) {
-      const t = state.clock.elapsedTime * 0.65;
+      const t = state.clock.elapsedTime * (0.65 + scroll * 0.4);
       const r = 2.15;
       satellite1Ref.current.position.x = Math.cos(t) * r;
       satellite1Ref.current.position.y = Math.sin(t) * (r * 0.35);
       satellite1Ref.current.position.z = Math.sin(t) * r;
     }
     if (satellite2Ref.current) {
-      const t = -state.clock.elapsedTime * 0.45 + Math.PI;
+      const t = -state.clock.elapsedTime * (0.45 + scroll * 0.3) + Math.PI;
       const r = 2.55;
       satellite2Ref.current.position.x = Math.cos(t) * r;
       satellite2Ref.current.position.y = Math.sin(t) * (r * -0.4);
@@ -102,7 +126,7 @@ export const CosmicCore: React.FC<CosmicCoreProps> = ({
   });
 
   return (
-    <group position={[targetX, targetY, 0]} scale={scaleMultiplier}>
+    <group ref={rootGroupRef} position={[baseTargetX, baseTargetY, 0]} scale={baseScale}>
       <group ref={groupRef}>
         <Float
           speed={isReducedMotion ? 0 : 1.8}

@@ -32,7 +32,7 @@ export const ContactSection: React.FC = () => {
           <div className="p-8 sm:p-12 rounded-2xl bg-[#151A2C]/80 border border-[#8065FF]/30 shadow-2xl backdrop-blur-xl mb-16 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div>
               <div className="text-xs font-mono uppercase tracking-wider text-[#8065FF] mb-2">
-                {'//'} Direct Email Contact Placeholder
+                {'//'} Direct Channel
               </div>
               <a
                 href={profileData.socials.find((s) => s.name === 'Email')?.url || 'mailto:[your-email@example.com]'}

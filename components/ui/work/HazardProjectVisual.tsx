@@ -1,22 +1,49 @@
 'use client';
 
 import React from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, useReducedMotion, useTransform, useMotionValue, MotionValue } from 'motion/react';
 
-export const HazardProjectVisual: React.FC = () => {
+interface HazardProjectVisualProps {
+  scrollProgress?: MotionValue<number>;
+}
+
+export const HazardProjectVisual: React.FC<HazardProjectVisualProps> = ({ scrollProgress }) => {
   const shouldReduceMotion = useReducedMotion();
+  const fallbackProgress = useMotionValue(0.5);
+  const activeProgress = scrollProgress || fallbackProgress;
+
+  // Scroll-driven elevation strata differential parallax
+  const fgContourY = useTransform(activeProgress, [0, 1], [-8, 8]);
+  const mgContourY = useTransform(activeProgress, [0, 1], [-4, 4]);
+  const bgContourY = useTransform(activeProgress, [0, 1], [-1.5, 1.5]);
+
+  // Scroll-driven progressive relocation spline and waypoint reveals
+  const routePathLength = useTransform(activeProgress, [0.25, 0.65], [0, 1]);
+  const routeOpacity = useTransform(activeProgress, [0.2, 0.3], [0, 0.85]);
+  const waypoint1Scale = useTransform(activeProgress, [0.38, 0.48], [0, 1]);
+  const waypoint2Scale = useTransform(activeProgress, [0.52, 0.62], [0, 1]);
+  const ambientGlowOpacity = useTransform(activeProgress, [0, 0.5, 1], [0.08, 0.22, 0.08]);
 
   return (
-    <div className="relative rounded-2xl bg-[#0B0E1B]/60 border border-[#48BFFF]/15 overflow-hidden shadow-2xl backdrop-blur-xl group transition-all duration-700 hover:border-[#48BFFF]/30">
-      {/* Ambient background glow */}
-      <div className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 rounded-full bg-[#48BFFF]/10 blur-3xl transition-opacity duration-700 group-hover:bg-[#48BFFF]/15" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-[#8065FF]/10 blur-3xl transition-opacity duration-700 group-hover:bg-[#8065FF]/15" />
+    <div className="relative w-full rounded-3xl bg-[#080B17]/75 border border-[#48BFFF]/20 overflow-hidden shadow-[0_20px_60px_-15px_rgba(72,191,255,0.18)] backdrop-blur-2xl group transition-all duration-700 hover:border-[#48BFFF]/40">
+      {/* Ambient background glow - coordinated with scroll */}
+      <motion.div
+        style={{ opacity: shouldReduceMotion ? 0.12 : ambientGlowOpacity }}
+        className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#48BFFF] blur-[120px] transition-opacity duration-700"
+      />
+      <div className="pointer-events-none absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#8065FF]/15 blur-[120px] transition-opacity duration-700 group-hover:bg-[#8065FF]/25" />
+
+      {/* Cartographic Coordinate Banner */}
+      <div className="px-5 py-2.5 border-b border-[#F1F2FA]/5 flex items-center justify-between text-[10px] font-mono text-[#9BA3BF]/70 select-none">
+        <span className="text-[#48BFFF] font-semibold">GEOSPATIAL ELEVATION STRATA // MODEL_V2</span>
+        <span className="tracking-widest hidden sm:inline">60°47&apos;N · 08°28&apos;E // NVE HYDROL</span>
+      </div>
 
       {/* Pure Topographic Map Canvas */}
-      <div className="relative p-4 sm:p-6 select-none">
+      <div className="relative p-4 sm:p-8 select-none">
         <svg
           viewBox="0 0 600 370"
-          className="w-full h-auto max-h-[350px]"
+          className="w-full h-auto max-h-[440px] lg:max-h-[490px]"
           style={{ overflow: 'visible' }}
         >
           <defs>
@@ -55,7 +82,10 @@ export const HazardProjectVisual: React.FC = () => {
           {/* Organic Topographic Elevation Contours with Restrained Strata Parallax */}
           <g fill="none">
             {/* Contour 1 - Valley Floor (Foreground strata) */}
-            <g opacity={0.3}>
+            <motion.g
+              opacity={0.3}
+              style={{ y: shouldReduceMotion ? 0 : fgContourY }}
+            >
               {!shouldReduceMotion && (
                 <animateTransform
                   attributeName="transform"
@@ -72,10 +102,13 @@ export const HazardProjectVisual: React.FC = () => {
                 stroke="#48BFFF"
                 strokeWidth="1"
               />
-            </g>
+            </motion.g>
 
             {/* Contour 2 - 25m Strata */}
-            <g opacity={0.4}>
+            <motion.g
+              opacity={0.4}
+              style={{ y: shouldReduceMotion ? 0 : fgContourY }}
+            >
               {!shouldReduceMotion && (
                 <animateTransform
                   attributeName="transform"
@@ -92,10 +125,13 @@ export const HazardProjectVisual: React.FC = () => {
                 stroke="#48BFFF"
                 strokeWidth="1"
               />
-            </g>
+            </motion.g>
 
             {/* Contour 3 - 60m Strata */}
-            <g opacity={0.55}>
+            <motion.g
+              opacity={0.55}
+              style={{ y: shouldReduceMotion ? 0 : mgContourY }}
+            >
               {!shouldReduceMotion && (
                 <animateTransform
                   attributeName="transform"
@@ -112,10 +148,13 @@ export const HazardProjectVisual: React.FC = () => {
                 stroke="#48BFFF"
                 strokeWidth="1"
               />
-            </g>
+            </motion.g>
 
             {/* Contour 4 - 110m (Primary Index Contour) */}
-            <g opacity={0.75}>
+            <motion.g
+              opacity={0.75}
+              style={{ y: shouldReduceMotion ? 0 : mgContourY }}
+            >
               {!shouldReduceMotion && (
                 <animateTransform
                   attributeName="transform"
@@ -132,10 +171,13 @@ export const HazardProjectVisual: React.FC = () => {
                 stroke="#48BFFF"
                 strokeWidth="1.4"
               />
-            </g>
+            </motion.g>
 
             {/* Contour 5 - 160m Intermediate */}
-            <g opacity={0.5}>
+            <motion.g
+              opacity={0.5}
+              style={{ y: shouldReduceMotion ? 0 : bgContourY }}
+            >
               {!shouldReduceMotion && (
                 <animateTransform
                   attributeName="transform"
@@ -152,10 +194,13 @@ export const HazardProjectVisual: React.FC = () => {
                 stroke="#8065FF"
                 strokeWidth="1"
               />
-            </g>
+            </motion.g>
 
             {/* Contour 6 - 210m Ridge Line */}
-            <g opacity={0.35}>
+            <motion.g
+              opacity={0.35}
+              style={{ y: shouldReduceMotion ? 0 : bgContourY }}
+            >
               {!shouldReduceMotion && (
                 <animateTransform
                   attributeName="transform"
@@ -172,7 +217,7 @@ export const HazardProjectVisual: React.FC = () => {
                 stroke="#8065FF"
                 strokeWidth="1"
               />
-            </g>
+            </motion.g>
           </g>
 
           {/* Elevation Labels */}
@@ -265,7 +310,7 @@ export const HazardProjectVisual: React.FC = () => {
             </text>
           </g>
 
-          {/* Progressive Scroll Reveal: Relocation Route Vector Spline */}
+          {/* Progressive Scroll-Driven Relocation Route Vector Spline */}
           <g>
             <motion.path
               d="M 160,275 C 230,230 320,250 440,140"
@@ -274,34 +319,34 @@ export const HazardProjectVisual: React.FC = () => {
               strokeWidth="1.8"
               strokeDasharray="5 4"
               strokeOpacity="0.8"
-              initial={shouldReduceMotion ? { pathLength: 1, opacity: 0.8 } : { pathLength: 0, opacity: 0 }}
-              whileInView={{ pathLength: 1, opacity: 0.8 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 1.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                pathLength: shouldReduceMotion ? 1 : routePathLength,
+                opacity: shouldReduceMotion ? 0.85 : routeOpacity,
+              }}
             />
 
-            {/* Waypoint 1 */}
+            {/* Waypoint 1 - revealed as route advances */}
             <motion.circle
               cx="280"
               cy="235"
               r="2.5"
               fill="#48BFFF"
-              initial={shouldReduceMotion ? { scale: 1, opacity: 0.9 } : { scale: 0, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 0.9 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.4, delay: 1.0, ease: 'easeOut' }}
+              style={{
+                scale: shouldReduceMotion ? 1 : waypoint1Scale,
+                opacity: shouldReduceMotion ? 0.9 : routeOpacity,
+              }}
             />
 
-            {/* Waypoint 2 */}
+            {/* Waypoint 2 - revealed as route approaches receptor */}
             <motion.circle
               cx="360"
               cy="195"
               r="2.5"
               fill="#48BFFF"
-              initial={shouldReduceMotion ? { scale: 1, opacity: 0.9 } : { scale: 0, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 0.9 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.4, delay: 1.4, ease: 'easeOut' }}
+              style={{
+                scale: shouldReduceMotion ? 1 : waypoint2Scale,
+                opacity: shouldReduceMotion ? 0.9 : routeOpacity,
+              }}
             />
           </g>
         </svg>

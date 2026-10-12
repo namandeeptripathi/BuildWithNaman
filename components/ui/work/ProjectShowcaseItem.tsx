@@ -17,11 +17,10 @@ export const ProjectShowcaseItem: React.FC<ProjectShowcaseItemProps> = ({
   project,
   index,
   visual,
-  isReversed = false,
   onOpenCaseStudy,
 }) => {
   const shouldReduceMotion = useReducedMotion();
-  const cardRef = useRef<HTMLElement>(null);
+  const sceneRef = useRef<HTMLElement>(null);
   const numberStr = `0${index + 1}`;
 
   // Top 2 architectural highlights for clean, editorial scannability
@@ -30,14 +29,35 @@ export const ProjectShowcaseItem: React.FC<ProjectShowcaseItemProps> = ({
   // Top 5 primary stack pills
   const primaryStack = project.stack.slice(0, 5);
 
-  // Restrained desktop parallax between text and artwork
+  // Scroll progress through this specific project scene
   const { scrollYProgress } = useScroll({
-    target: cardRef,
+    target: sceneRef,
     offset: ['start end', 'end start'],
   });
 
-  const visualParallaxY = useTransform(scrollYProgress, [0, 1], [-12, 12]);
-  const textParallaxY = useTransform(scrollYProgress, [0, 1], [8, -8]);
+  // Scene-specific exit and parallax transforms
+  const isOrgTrace = project.id === 'orgtrace';
+  const isHazard = project.id === 'hazard-project';
+
+  // OrgTrace: Scene exit recession as user scrolls toward Hazard Project
+  const orgTraceExitScale = useTransform(scrollYProgress, [0.72, 1], [1, 0.94]);
+  const orgTraceExitOpacity = useTransform(scrollYProgress, [0.78, 1], [1, 0.25]);
+
+  // Hazard: Differentiated cross-parallax
+  const hazardVisualParallaxY = useTransform(scrollYProgress, [0, 1], [-24, 24]);
+  const hazardTextParallaxY = useTransform(scrollYProgress, [0, 1], [16, -16]);
+
+  // DevFlow: Perspective scale exit into Manifesto
+  const devFlowExitScale = useTransform(scrollYProgress, [0.75, 1], [1, 0.95]);
+  const devFlowExitOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0.3]);
+
+  // Clone visual and pass scrollProgress MotionValue
+  const visualWithScroll = React.isValidElement(visual)
+    ? React.cloneElement(
+        visual as React.ReactElement<{ scrollProgress?: typeof scrollYProgress }>,
+        { scrollProgress: scrollYProgress }
+      )
+    : visual;
 
   const headerBlock = (
     <div>
@@ -59,11 +79,19 @@ export const ProjectShowcaseItem: React.FC<ProjectShowcaseItemProps> = ({
         </div>
       </div>
 
-      {/* Project Title & Tagline */}
+      {/* Project Title & Tagline with Masked Reveal */}
       <div className="mb-4">
-        <h3 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-[#F1F2FA] tracking-tight group-hover:text-[#48BFFF] transition-colors duration-500">
-          {project.title}
-        </h3>
+        <div className="overflow-hidden">
+          <motion.h3
+            initial={shouldReduceMotion ? false : { y: '100%', opacity: 0.3 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as const }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-[#F1F2FA] tracking-tight group-hover:text-[#48BFFF] transition-colors duration-500 leading-tight"
+          >
+            {project.title}
+          </motion.h3>
+        </div>
         <p
           className="text-sm sm:text-base font-mono mt-2 leading-relaxed"
           style={{ color: project.accentColor || '#8065FF' }}
@@ -108,7 +136,7 @@ export const ProjectShowcaseItem: React.FC<ProjectShowcaseItemProps> = ({
           {primaryStack.map((tech) => (
             <span
               key={tech}
-              className="px-2.5 py-1 rounded text-[11px] font-mono bg-[#080A12]/80 text-[#9BA3BF] border border-[#F1F2FA]/[0.08]"
+              className="px-2.5 py-1 rounded-full text-[11px] font-mono bg-[#151A2C]/80 text-[#9BA3BF] border border-[#F1F2FA]/[0.08]"
             >
               {tech}
             </span>
@@ -139,70 +167,136 @@ export const ProjectShowcaseItem: React.FC<ProjectShowcaseItemProps> = ({
     </div>
   );
 
+  // BESPOKE SCENE 1: ORGTRACE (Entity Intelligence Constellation with Sticky Staging)
+  if (isOrgTrace) {
+    return (
+      <section
+        ref={sceneRef}
+        id={project.id}
+        className="scroll-mt-24 relative min-h-[110vh] lg:min-h-[145vh] py-10 lg:py-16"
+      >
+        {/* Mobile Title Block */}
+        <div className="block lg:hidden mb-6 px-2">
+          {headerBlock}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+          {/* Text Content Column */}
+          <motion.div
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] as const }}
+            className="lg:col-span-5 relative z-10"
+          >
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#090C19]/60 border border-[#8065FF]/15 backdrop-blur-xl shadow-xl">
+              {textContent}
+            </div>
+          </motion.div>
+
+          {/* Sticky Constellation Stage on Desktop */}
+          <motion.div
+            style={{
+              scale: shouldReduceMotion ? 1 : orgTraceExitScale,
+              opacity: shouldReduceMotion ? 1 : orgTraceExitOpacity,
+            }}
+            className="lg:col-span-7 lg:sticky lg:top-24 self-start w-full"
+          >
+            {visualWithScroll}
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
+  // BESPOKE SCENE 2: HAZARD PROJECT (Widescreen Spatial Cartography Landscape)
+  if (isHazard) {
+    return (
+      <section
+        ref={sceneRef}
+        id={project.id}
+        className="scroll-mt-24 relative py-12 lg:py-20"
+      >
+        {/* Mobile Title Block */}
+        <div className="block lg:hidden mb-6 px-2">
+          {headerBlock}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+          {/* Spatial Cartography Visual on Left */}
+          <motion.div
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] as const }}
+            className="lg:col-span-7 w-full"
+          >
+            <motion.div style={{ y: shouldReduceMotion ? 0 : hazardVisualParallaxY }}>
+              {visualWithScroll}
+            </motion.div>
+          </motion.div>
+
+          {/* Editorial Spatial Risk Analysis Text on Right */}
+          <motion.div
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.85, delay: 0.08, ease: [0.16, 1, 0.3, 1] as const }}
+            className="lg:col-span-5"
+          >
+            <motion.div
+              style={{ y: shouldReduceMotion ? 0 : hazardTextParallaxY }}
+              className="p-6 sm:p-8 rounded-3xl bg-[#090C19]/60 border border-[#48BFFF]/15 backdrop-blur-xl shadow-xl"
+            >
+              {textContent}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
+  // BESPOKE SCENE 3: DEVFLOW AI (Architectural Holographic Workbench)
   return (
-    <article
-      ref={cardRef}
+    <section
+      ref={sceneRef}
       id={project.id}
-      className="scroll-mt-28 relative rounded-3xl bg-[#0D1122]/35 border border-[#F1F2FA]/[0.07] p-6 sm:p-8 lg:p-11 transition-all duration-700 hover:border-[#8065FF]/25 hover:bg-[#12162A]/50 backdrop-blur-xl group"
+      className="scroll-mt-24 relative py-12 lg:py-20"
     >
-      {/* Mobile Title Block: always visible at the top on mobile, hidden on desktop */}
-      <div className="block lg:hidden mb-6">
+      {/* Mobile Title Block */}
+      <div className="block lg:hidden mb-6 px-2">
         {headerBlock}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-        {isReversed ? (
-          <>
-            <motion.div
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-7"
-            >
-              <motion.div style={{ y: shouldReduceMotion ? 0 : visualParallaxY }}>
-                {visual}
-              </motion.div>
-            </motion.div>
-            <motion.div
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-5"
-            >
-              <motion.div style={{ y: shouldReduceMotion ? 0 : textParallaxY }}>
-                {textContent}
-              </motion.div>
-            </motion.div>
-          </>
-        ) : (
-          <>
-            <motion.div
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-5"
-            >
-              <motion.div style={{ y: shouldReduceMotion ? 0 : textParallaxY }}>
-                {textContent}
-              </motion.div>
-            </motion.div>
-            <motion.div
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-7"
-            >
-              <motion.div style={{ y: shouldReduceMotion ? 0 : visualParallaxY }}>
-                {visual}
-              </motion.div>
-            </motion.div>
-          </>
-        )}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+        {/* Developer Tooling Narrative on Left */}
+        <motion.div
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.85, delay: 0.08, ease: [0.16, 1, 0.3, 1] as const }}
+          className="lg:col-span-5"
+        >
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#090C19]/60 border border-[#8065FF]/15 backdrop-blur-xl shadow-xl">
+            {textContent}
+          </div>
+        </motion.div>
+
+        {/* 3D Holographic Workbench on Right */}
+        <motion.div
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] as const }}
+          style={{
+            scale: shouldReduceMotion ? 1 : devFlowExitScale,
+            opacity: shouldReduceMotion ? 1 : devFlowExitOpacity,
+          }}
+          className="lg:col-span-7 w-full"
+        >
+          {visualWithScroll}
+        </motion.div>
       </div>
-    </article>
+    </section>
   );
 };

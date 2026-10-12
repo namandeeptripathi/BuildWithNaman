@@ -4,7 +4,6 @@ import { HeroSection } from '@/components/ui/HeroSection';
 import { SelectedWorkSection } from '@/components/ui/SelectedWorkSection';
 import { ManifestoSection } from '@/components/ui/ManifestoSection';
 import { AboutSection } from '@/components/ui/AboutSection';
-import { DeveloperTerminal } from '@/components/ui/DeveloperTerminal';
 import { ContactSection } from '@/components/ui/ContactSection';
 
 export default function Home() {
@@ -28,9 +27,6 @@ export default function Home() {
 
         {/* ABOUT & SKILLS SECTION */}
         <AboutSection />
-
-        {/* INTERACTIVE DEVELOPER TERMINAL */}
-        <DeveloperTerminal />
 
         {/* CONTACT SECTION & FOOTER */}
         <ContactSection />

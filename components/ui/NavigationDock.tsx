@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Code2, Briefcase, User, Mail, Compass, FileText, Terminal } from 'lucide-react';
+import { Code2, Briefcase, User, Mail, Compass, FileText } from 'lucide-react';
 import { profileData } from '@/data/profile';
 
 export const NavigationDock: React.FC = () => {
@@ -13,7 +13,7 @@ export const NavigationDock: React.FC = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
 
-      const sections = ['hero', 'work', 'manifesto', 'about', 'skills', 'terminal', 'contact'];
+      const sections = ['hero', 'work', 'manifesto', 'skills', 'about', 'contact'];
       for (const section of sections) {
         const el = document.getElementById(section);
         if (el) {
@@ -34,7 +34,6 @@ export const NavigationDock: React.FC = () => {
     { id: 'work', label: 'Work', icon: Briefcase, href: '#work' },
     { id: 'manifesto', label: 'Manifesto', icon: Compass, href: '#manifesto' },
     { id: 'skills', label: 'Stack', icon: Code2, href: '#skills' },
-    { id: 'terminal', label: 'Terminal', icon: Terminal, href: '#terminal' },
     { id: 'about', label: 'About', icon: User, href: '#about' },
     { id: 'contact', label: 'Contact', icon: Mail, href: '#contact' },
   ];
