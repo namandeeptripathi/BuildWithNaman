@@ -1,189 +1,249 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import React, { useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Float, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface CosmicCoreProps {
-  isResonating: boolean;
-  onToggleResonance: () => void;
+  pointerRef: React.RefObject<{ x: number; y: number }>;
   isReducedMotion: boolean;
   isMobile: boolean;
 }
 
 export const CosmicCore: React.FC<CosmicCoreProps> = ({
-  isResonating,
-  onToggleResonance,
+  pointerRef,
   isReducedMotion,
   isMobile,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
-  const coreRef = useRef<THREE.Mesh>(null);
+  const outerCrystalRef = useRef<THREE.Mesh>(null);
+  const innerGemRef = useRef<THREE.Mesh>(null);
   const latticeRef = useRef<THREE.Mesh>(null);
   const ring1Ref = useRef<THREE.Mesh>(null);
   const ring2Ref = useRef<THREE.Mesh>(null);
-  const satelliteRef = useRef<THREE.Mesh>(null);
+  const ring3Ref = useRef<THREE.Mesh>(null);
+  const satellite1Ref = useRef<THREE.Mesh>(null);
+  const satellite2Ref = useRef<THREE.Mesh>(null);
 
-  const [hovered, setHovered] = useState(false);
+  const { viewport } = useThree();
 
-  // Animate elements on frame with smooth interpolation
+  // Responsive focal positioning based on canvas viewport
+  const isNarrow = viewport.width < 5.8;
+  const targetX = isNarrow ? 0 : Math.min(viewport.width * 0.28, 2.15);
+  const targetY = isNarrow ? 0.35 : 0;
+  const scaleMultiplier = isNarrow ? 0.72 : 0.95;
+
   useFrame((state, delta) => {
-    // Pointer parallax damping
-    if (groupRef.current && !isReducedMotion) {
-      const targetRotX = state.pointer.y * 0.35;
-      const targetRotY = state.pointer.x * 0.45;
+    // Deliberate pointer parallax with weighted damping
+    if (groupRef.current && !isReducedMotion && pointerRef.current) {
+      const targetRotX = pointerRef.current.y * 0.22;
+      const targetRotY = pointerRef.current.x * 0.28;
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
         groupRef.current.rotation.x,
         targetRotX,
-        0.05
+        0.04
       );
       groupRef.current.rotation.y = THREE.MathUtils.lerp(
         groupRef.current.rotation.y,
         targetRotY,
-        0.05
+        0.04
       );
     }
 
     if (isReducedMotion) return;
 
-    const speed = isResonating ? 2.4 : 1.0;
-
-    if (coreRef.current) {
-      coreRef.current.rotation.y += delta * 0.35 * speed;
-      coreRef.current.rotation.x += delta * 0.2 * speed;
+    // Outer prismatic crystal: slow, stately rotation catching faceted specular gleams
+    if (outerCrystalRef.current) {
+      outerCrystalRef.current.rotation.y += delta * 0.2;
+      outerCrystalRef.current.rotation.x += delta * 0.12;
     }
 
+    // Inner luminescent gem: counter-rotation creating optical refraction depth
+    if (innerGemRef.current) {
+      innerGemRef.current.rotation.y -= delta * 0.35;
+      innerGemRef.current.rotation.z += delta * 0.22;
+    }
+
+    // Outer architectural lattice: breathing scale and counter-spin
     if (latticeRef.current) {
-      latticeRef.current.rotation.y -= delta * 0.25 * speed;
-      latticeRef.current.rotation.z += delta * 0.15 * speed;
-      // Gentle pulsing scale
-      const pulse = Math.sin(state.clock.elapsedTime * (isResonating ? 3 : 1.5)) * 0.04;
-      latticeRef.current.scale.set(1.35 + pulse, 1.35 + pulse, 1.35 + pulse);
+      latticeRef.current.rotation.y -= delta * 0.14;
+      latticeRef.current.rotation.x += delta * 0.08;
+      const pulse = Math.sin(state.clock.elapsedTime * 1.2) * 0.025;
+      latticeRef.current.scale.set(1.42 + pulse, 1.42 + pulse, 1.42 + pulse);
     }
 
+    // Multi-axis orbital rings
     if (ring1Ref.current) {
-      ring1Ref.current.rotation.z += delta * 0.45 * speed;
+      ring1Ref.current.rotation.z += delta * 0.2;
     }
-
     if (ring2Ref.current) {
-      ring2Ref.current.rotation.z -= delta * 0.38 * speed;
+      ring2Ref.current.rotation.z -= delta * 0.16;
+    }
+    if (ring3Ref.current) {
+      ring3Ref.current.rotation.z += delta * 0.1;
     }
 
-    // Orbit satellite position calculation
-    if (satelliteRef.current) {
-      const time = state.clock.elapsedTime * (isResonating ? 2.0 : 0.8);
-      const radius = 2.3;
-      satelliteRef.current.position.x = Math.cos(time) * radius;
-      satelliteRef.current.position.y = Math.sin(time) * (radius * 0.4);
-      satelliteRef.current.position.z = Math.sin(time) * radius;
+    // Orbital satellite beacons
+    if (satellite1Ref.current) {
+      const t = state.clock.elapsedTime * 0.65;
+      const r = 2.15;
+      satellite1Ref.current.position.x = Math.cos(t) * r;
+      satellite1Ref.current.position.y = Math.sin(t) * (r * 0.35);
+      satellite1Ref.current.position.z = Math.sin(t) * r;
+    }
+    if (satellite2Ref.current) {
+      const t = -state.clock.elapsedTime * 0.45 + Math.PI;
+      const r = 2.55;
+      satellite2Ref.current.position.x = Math.cos(t) * r;
+      satellite2Ref.current.position.y = Math.sin(t) * (r * -0.4);
+      satellite2Ref.current.position.z = Math.sin(t) * r;
     }
   });
 
   return (
-    <group ref={groupRef}>
-      <Float
-        speed={isReducedMotion ? 0 : isResonating ? 3.5 : 2}
-        rotationIntensity={isReducedMotion ? 0 : 0.3}
-        floatIntensity={isReducedMotion ? 0 : 0.5}
-      >
-        {/* Clickable Core Group */}
-        <group
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleResonance();
-          }}
-          onPointerOver={() => {
-            setHovered(true);
-            document.body.style.cursor = 'pointer';
-          }}
-          onPointerOut={() => {
-            setHovered(false);
-            document.body.style.cursor = 'auto';
-          }}
+    <group position={[targetX, targetY, 0]} scale={scaleMultiplier}>
+      <group ref={groupRef}>
+        <Float
+          speed={isReducedMotion ? 0 : 1.8}
+          rotationIntensity={isReducedMotion ? 0 : 0.2}
+          floatIntensity={isReducedMotion ? 0 : 0.32}
         >
-          {/* Inner Faceted Monolith / Icosahedron Core */}
-          <mesh ref={coreRef}>
-            <icosahedronGeometry args={[1.05, 0]} />
+          {/* Central Prismatic Glass Sculpture Group */}
+          <group>
+            {/* Inner Luminescent Gem Core */}
+            <mesh ref={innerGemRef}>
+              <octahedronGeometry args={[0.58, 0]} />
+              <meshStandardMaterial
+                roughness={0.08}
+                metalness={0.9}
+                color="#6B4CFF"
+                emissive="#48BFFF"
+                emissiveIntensity={3.2}
+              />
+            </mesh>
+
+            {/* Inner Refractive Radiance */}
+            <pointLight
+              color="#8065FF"
+              intensity={4.2}
+              distance={5}
+              decay={2}
+            />
+            <pointLight
+              color="#48BFFF"
+              intensity={3.2}
+              distance={4}
+              decay={2}
+              position={[0, -0.1, 0.25]}
+            />
+
+            {/* Outer Prismatic Crystal Monolith with Faceted Diamond Shading */}
+            <mesh ref={outerCrystalRef}>
+              <icosahedronGeometry args={[1.22, 0]} />
+              <meshPhysicalMaterial
+                roughness={0.08}
+                metalness={0.15}
+                clearcoat={1.0}
+                clearcoatRoughness={0.04}
+                color="#231D4A"
+                emissive="#3D2E80"
+                emissiveIntensity={0.55}
+                transparent={true}
+                opacity={0.88}
+                flatShading={true}
+              />
+            </mesh>
+
+            {/* Outer Architectural Lattice — subdued to let crystal dominate */}
+            <mesh ref={latticeRef}>
+              <icosahedronGeometry args={[1.48, 1]} />
+              <meshStandardMaterial
+                wireframe
+                roughness={0.3}
+                metalness={0.6}
+                color="#8065FF"
+                emissive="#8065FF"
+                emissiveIntensity={0.4}
+                transparent
+                opacity={0.18}
+              />
+            </mesh>
+          </group>
+
+          {/* Primary Orbital Torus Ring */}
+          <mesh ref={ring1Ref} rotation={[Math.PI / 3.2, 0.2, 0]}>
+            <torusGeometry args={[2.15, 0.012, 16, isMobile ? 64 : 128]} />
             <meshStandardMaterial
-              roughness={0.18}
-              metalness={0.88}
-              color={hovered ? '#261D4C' : '#14172E'}
-              emissive={isResonating ? '#8065FF' : '#3E2A82'}
-              emissiveIntensity={isResonating ? 1.6 : hovered ? 0.9 : 0.45}
+              color="#8065FF"
+              emissive="#8065FF"
+              emissiveIntensity={1.4}
+              metalness={0.9}
+              roughness={0.1}
             />
           </mesh>
 
-          {/* Outer Protective Lattice Cage */}
-          <mesh ref={latticeRef}>
-            <icosahedronGeometry args={[1.35, 1]} />
+          {/* Secondary Counter-Inclined Torus Ring */}
+          <mesh ref={ring2Ref} rotation={[-Math.PI / 3.8, 0.4, 0.2]}>
+            <torusGeometry args={[2.55, 0.009, 16, isMobile ? 64 : 128]} />
             <meshStandardMaterial
-              wireframe
-              roughness={0.3}
-              metalness={0.6}
-              color={isResonating ? '#48BFFF' : hovered ? '#A38FFF' : '#8065FF'}
-              emissive={isResonating ? '#48BFFF' : '#8065FF'}
-              emissiveIntensity={isResonating ? 1.2 : 0.7}
+              color="#48BFFF"
+              emissive="#48BFFF"
+              emissiveIntensity={1.3}
+              metalness={0.9}
+              roughness={0.1}
+            />
+          </mesh>
+
+          {/* Equatorial Accent Ring — very subtle */}
+          <mesh ref={ring3Ref} rotation={[Math.PI / 6, -Math.PI / 4, 0]}>
+            <torusGeometry args={[1.72, 0.005, 16, isMobile ? 48 : 96]} />
+            <meshStandardMaterial
+              color="#F1F2FA"
+              emissive="#F1F2FA"
+              emissiveIntensity={0.5}
+              metalness={0.95}
+              roughness={0.08}
               transparent
-              opacity={0.65}
+              opacity={0.22}
             />
           </mesh>
 
-          {/* Internal Glow Light */}
-          <pointLight
-            color={isResonating ? '#48BFFF' : '#8065FF'}
-            intensity={isResonating ? 4.5 : 1.8}
-            distance={5}
-            decay={2}
-          />
-        </group>
+          {/* Orbital Satellite Node 1 */}
+          <mesh ref={satellite1Ref}>
+            <sphereGeometry args={[0.065, 16, 16]} />
+            <meshStandardMaterial
+              color="#48BFFF"
+              emissive="#48BFFF"
+              emissiveIntensity={3.0}
+              metalness={0.8}
+              roughness={0.15}
+            />
+          </mesh>
 
-        {/* Primary Orbital Torus Ring */}
-        <mesh ref={ring1Ref} rotation={[Math.PI / 3, 0, 0]}>
-          <torusGeometry args={[1.95, 0.018, 16, 120]} />
-          <meshStandardMaterial
-            color="#8065FF"
-            emissive="#8065FF"
-            emissiveIntensity={isResonating ? 1.8 : 0.9}
-            metalness={0.9}
-            roughness={0.1}
-          />
-        </mesh>
+          {/* Orbital Satellite Node 2 */}
+          <mesh ref={satellite2Ref}>
+            <sphereGeometry args={[0.045, 16, 16]} />
+            <meshStandardMaterial
+              color="#8065FF"
+              emissive="#8065FF"
+              emissiveIntensity={3.2}
+              metalness={0.8}
+              roughness={0.15}
+            />
+          </mesh>
+        </Float>
 
-        {/* Secondary Intersecting Torus Ring */}
-        <mesh ref={ring2Ref} rotation={[-Math.PI / 4, Math.PI / 4, 0]}>
-          <torusGeometry args={[2.35, 0.015, 16, 120]} />
-          <meshStandardMaterial
-            color="#48BFFF"
-            emissive="#48BFFF"
-            emissiveIntensity={isResonating ? 1.8 : 0.9}
-            metalness={0.9}
-            roughness={0.1}
-          />
-        </mesh>
-
-        {/* Orbital Satellite Node */}
-        <mesh ref={satelliteRef}>
-          <sphereGeometry args={[0.07, 16, 16]} />
-          <meshStandardMaterial
-            color="#48BFFF"
-            emissive="#48BFFF"
-            emissiveIntensity={2.5}
-            metalness={0.8}
-            roughness={0.2}
-          />
-        </mesh>
-      </Float>
-
-      {/* Atmospheric Environmental Sparkles */}
-      <Sparkles
-        count={isMobile ? 24 : isResonating ? 70 : 45}
-        scale={6.5}
-        size={isMobile ? 1.8 : 2.4}
-        speed={isReducedMotion ? 0 : isResonating ? 1.4 : 0.4}
-        color={isResonating ? '#48BFFF' : '#8065FF'}
-        opacity={0.7}
-      />
+        {/* Serene Atmospheric Particle Field */}
+        <Sparkles
+          count={isMobile ? 18 : 36}
+          scale={7.0}
+          size={isMobile ? 1.6 : 2.2}
+          speed={isReducedMotion ? 0 : 0.35}
+          color="#8065FF"
+          opacity={0.5}
+        />
+      </group>
     </group>
   );
 };
