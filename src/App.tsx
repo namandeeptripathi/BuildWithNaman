@@ -8,6 +8,7 @@ import ProjectRow from './components/ProjectRow'
 import HeroLattice from './components/HeroLattice'
 import ScrollProgress from './components/ScrollProgress'
 import CopyEmailButton from './components/CopyEmailButton'
+import BlurText from './components/reactbits/BlurText'
 import {
   about,
   contactRows,
@@ -39,10 +40,64 @@ export default function App() {
                 <b>{profile.kicker}</b>
                 <span>{profile.location}</span>
               </p>
-              <h1 className="name">
-                <span>{profile.name.first}</span>
-                <span className="mid">{profile.name.middle}</span>
-                <span className="last">{profile.name.last}</span>
+              <h1
+                className="name"
+                aria-label={`${profile.name.first} ${profile.name.middle} ${profile.name.last}`}
+              >
+                <span className="name-line line-1">
+                  <BlurText
+                    text={profile.name.first}
+                    delay={35}
+                    animateBy="letters"
+                    direction="top"
+                    as="span"
+                    ariaHidden
+                    initialDelay={0}
+                    stepDuration={0.32}
+                    animationFrom={{ filter: 'blur(10px)', opacity: 0, y: 22 }}
+                    animationTo={[
+                      { filter: 'blur(4px)', opacity: 0.7, y: 6 },
+                      { filter: 'blur(0px)', opacity: 1, y: 0 },
+                    ]}
+                    easing={[0.2, 0.7, 0.2, 1]}
+                  />
+                </span>
+                <span className="name-line line-2 mid">
+                  <BlurText
+                    text={profile.name.middle}
+                    delay={35}
+                    animateBy="letters"
+                    direction="top"
+                    as="span"
+                    ariaHidden
+                    initialDelay={0.14}
+                    stepDuration={0.32}
+                    animationFrom={{ filter: 'blur(10px)', opacity: 0, y: 22 }}
+                    animationTo={[
+                      { filter: 'blur(4px)', opacity: 0.7, y: 6 },
+                      { filter: 'blur(0px)', opacity: 1, y: 0 },
+                    ]}
+                    easing={[0.2, 0.7, 0.2, 1]}
+                  />
+                </span>
+                <span className="name-line line-3 last">
+                  <BlurText
+                    text={profile.name.last}
+                    delay={35}
+                    animateBy="letters"
+                    direction="top"
+                    as="span"
+                    ariaHidden
+                    initialDelay={0.28}
+                    stepDuration={0.32}
+                    animationFrom={{ filter: 'blur(10px)', opacity: 0, y: 22 }}
+                    animationTo={[
+                      { filter: 'blur(4px)', opacity: 0.7, y: 6 },
+                      { filter: 'blur(0px)', opacity: 1, y: 0 },
+                    ]}
+                    easing={[0.2, 0.7, 0.2, 1]}
+                  />
+                </span>
               </h1>
             </div>
             <div className="hero-side">

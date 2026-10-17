@@ -263,11 +263,11 @@ h1.name {
   letter-spacing: -0.025em;
 }
 
-h1.name span {
+h1.name > span {
   display: block;
 }
 
-h1.name .mid {
+h1.name > .mid {
   font-style: italic;
   color: var(--brass);
   padding-left: 0.7em;
@@ -339,15 +339,6 @@ h1.name .mid {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  h1.name span {
-    animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
-  }
-  h1.name .mid {
-    animation-delay: 0.12s;
-  }
-  h1.name .last {
-    animation-delay: 0.24s;
-  }
   .rule {
     animation: draw 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s backwards;
   }

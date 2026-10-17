@@ -30,7 +30,7 @@ export default function ScrollProgress() {
 
         // Hero name parallax
         if (!reduce && y < 1000) {
-          const lines = document.querySelectorAll<HTMLElement>('h1.name span')
+          const lines = document.querySelectorAll<HTMLElement>('h1.name > span')
           if (lines.length === 3) {
             lines[0].style.transform = `translateX(${-y * 0.06}px)`
             lines[1].style.transform = `translateX(${y * 0.12}px)`
