@@ -1,92 +1,91 @@
 # Naman Deep Tripathi — Portfolio
 
-Personal portfolio and digital archive of Naman Deep Tripathi, showcasing practical software engineering, AI/ML systems, and full-stack web applications. Built with an editorial dark-luxury design aesthetic, subtle scroll physics, and responsive layouts.
+Personal portfolio of Naman Deep Tripathi. It contains project case studies, an interactive 3D hero lattice, a technical skill and dependency listing, work history, and a validated contact form.
 
 ## Features
 
-- **Editorial Design System**: Curated typography (Bodoni Moda, Hanken Grotesk, DM Mono) with dark-luxury and warm-light themes, smooth transitions, and zero-FOUC state restoration.
-- **3D Hero Lattice**: Interactive Three.js icosahedron canvas loaded lazily post-paint with pointer reactivity, WebGL context loss recovery, and graceful static fallback.
-- **Scroll Motion**: Coordinated section reveals, line animations, and manifesto stagger effects orchestrated via dynamically imported Anime.js.
-- **Case Studies**: Interactive project cards featuring glassmorphic browser mockups, radial spotlight effects, and live demo links.
-- **Accessible Contact Form**: Accessible contact form with inline validation, honeypot spam protection, 15s timeout guard, and Formspree integration.
-- **SEO & Social Preview**: 1200×630 Open Graph preview image, Twitter Card meta tags, and Schema.org Person JSON-LD structured data.
-- **Accessibility & Performance**: WCAG 2.1 AA compliant color tokens, skip-to-content navigation, keyboard-accessible scroll regions, and strict `prefers-reduced-motion` compliance.
+- Editorial Design System: Typography with Bodoni Moda, Hanken Grotesk, and DM Mono, supporting dark-luxury and warm-light themes with localStorage persistence and zero-FOUC inline theme loading.
+- 3D Hero Lattice: Three.js icosahedron canvas loaded lazily post-paint with pointer reactivity; if WebGL is unavailable or the context is lost, the canvas is hidden and the hero stays readable without console errors.
+- Scroll Motion: Section reveals, an animated connecting line in the Work section, and dependency listing stagger effects orchestrated via dynamically imported Anime.js.
+- Case Studies: Project cards featuring browser-frame previews with a spotlight hover, tech tags, and links to live deployments and GitHub repositories.
+- Accessible Contact Form: Inline-validated contact form with honeypot spam protection, a 15-second timeout guard, and Formspree integration.
+- SEO and Social Preview: 1200x630 Open Graph preview image, Twitter Card meta tags, and Schema.org Person JSON-LD structured data.
+- Accessibility: Color tokens pass WCAG 2.1 AA contrast ratios, skip-to-content link, keyboard-accessible scroll regions, and prefers-reduced-motion support.
 
 ## Tech Stack
 
-- **Core**: [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vite.dev/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) & Vanilla CSS custom properties
-- **3D & Animation**: [Three.js](https://threejs.org/), [Anime.js v4](https://animejs.com/), [Motion](https://motion.dev/)
-- **UI Components**: [React Bits](https://reactbits.dev/) (`BlurText`, `SpotlightCard`)
-- **Backend / Forms**: [Formspree](https://formspree.io/)
+- Core: React 19, TypeScript, Vite
+- Styling: Tailwind CSS v4 and Vanilla CSS custom properties
+- 3D and Animation: Three.js, Anime.js v4, Motion (motion/react)
+- UI Components: React Bits (BlurText, SpotlightCard)
+- Form Backend: Formspree
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+ (tested on Node.js 20+)
-- npm 9+
+- Node.js: ^20.19.0 || >=22.12.0 (required by Vite; tested on Node.js v26.5.0, npm 11.17.0)
 
-### Installation & Development
+### Installation and Commands
+Clone the repository:
 ```bash
-# Clone repository
 git clone https://github.com/namandeeptripathi/BuildWithNaman.git
 cd BuildWithNaman
-
-# Install dependencies
 npm install
-
-# Start local dev server (http://localhost:5173)
-npm run dev
-
-# Run type check & build production bundle
-npm run build
-
-# Preview production build locally (http://localhost:4173)
-npm run preview
-
-# Run linter
-npm run lint
 ```
+
+Development and build commands:
+- `npm run dev`: starts the Vite local development server at http://localhost:5173
+- `npm run build`: runs `tsc -b && vite build` (TypeScript check and Vite production bundling)
+- `npm run preview`: previews the production build locally at http://localhost:4173
+- `npm run lint`: runs Oxlint across project source files
 
 ## Environment Variables
 
-Create a `.env` file in the project root (never committed to git, excluded via `.gitignore`). Refer to `.env.example`:
+Create a `.env` file in the project root (excluded from version control via `.gitignore`). Refer to `.env.example`:
 
 ```bash
 VITE_FORMSPREE_ID=your_formspree_form_id
 VITE_SITE_URL=https://yourdomain.com
 ```
 
-- `VITE_FORMSPREE_ID`: The Formspree endpoint identifier for receiving contact form messages. If omitted, the contact form falls back gracefully to direct mailto links.
-- `VITE_SITE_URL`: The production site base URL used to resolve canonical and Open Graph meta tags during build.
+- `VITE_FORMSPREE_ID`: The Formspree form identifier for receiving contact form submissions. If omitted, the form falls back to direct mailto links.
+- `VITE_SITE_URL`: Production site base URL used to resolve canonical and Open Graph URLs during build.
 
 ## Project Structure
 
 ```
-├── public/                # Static assets (og.png, apple-touch-icon, favicon, screenshots)
+├── public/
+│   ├── projects/          # Project screenshots (WebP)
+│   ├── apple-touch-icon.png
+│   ├── favicon.svg
+│   ├── og.png             # 1200x630 social preview image
+│   └── robots.txt
+├── reference/             # Original single-file HTML/CSS prototype
 ├── src/
-│   ├── components/        # React UI components (Hero, Header, ProjectRow, ContactForm)
-│   │   └── reactbits/     # Specialized interactive components (BlurText, SpotlightCard)
+│   ├── components/        # React components (Hero, Header, ProjectRow, ContactForm)
+│   │   └── reactbits/     # BlurText and SpotlightCard components
 │   ├── lib/
 │   │   ├── motion/        # Scroll motion controllers (reveal, stack, manifest, line)
 │   │   ├── useTheme.ts    # Light/dark theme toggle and persistence hook
 │   │   └── usePrefersReducedMotion.ts
-│   ├── data.ts            # Single source of truth for all portfolio content and metadata
+│   ├── data.ts            # Profile content, project info, skills, and copy
 │   ├── index.css          # Design tokens, typography, and utility stylesheets
-│   ├── App.tsx            # Main application layout and landmark structure
+│   ├── App.tsx            # Main layout and landmark structure
 │   └── main.tsx           # React DOM root entrypoint
-├── index.html             # Shell HTML, Google Fonts, theme loader script, SEO tags
+├── tools/
+│   └── og/                # HTML templates used to generate og.png and apple-touch-icon.png
+├── index.html             # Shell HTML, Google Fonts, theme loader script, SEO metadata
 └── vite.config.ts         # Vite bundler configuration and build plugins
 ```
 
 ## Editing Content
 
-All site copy, personal bio, social URLs, skills list, manifesto lines, and project metadata are centralized in [`src/data.ts`](src/data.ts). Updating content does not require editing component JSX.
+All site copy, personal bio, social links, skills list, Maven-style dependency listing, and project metadata reside in `src/data.ts`. Content changes can be made there without modifying component JSX.
 
 ## Credits
 
-- UI motion components (`BlurText`, `SpotlightCard`) adapted from [React Bits](https://reactbits.dev/) by David Haz, licensed under the **MIT + Commons Clause License**.
+UI motion components (`BlurText`, `SpotlightCard`) adapted from React Bits (https://reactbits.dev/) by David Haz, under the MIT + Commons Clause License Condition v1.0.
 
 ## License
 
-All rights reserved for personal content, case-study texts, project media, and custom design elements © Naman Deep Tripathi. Open-source third-party dependencies are governed by their respective licenses.
+All rights reserved for personal content, case-study copy, project media, and custom design elements (c) Naman Deep Tripathi. Open-source third-party dependencies are governed by their respective licenses.
