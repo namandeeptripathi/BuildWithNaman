@@ -7,6 +7,7 @@ import ProjectRow from './components/ProjectRow'
 import HeroLattice from './components/HeroLattice'
 import ScrollProgress from './components/ScrollProgress'
 import CopyEmailButton from './components/CopyEmailButton'
+import ContactForm from './components/ContactForm'
 import BlurText from './components/reactbits/BlurText'
 import {
   about,
@@ -121,6 +122,17 @@ export default function App() {
                 >
                   {profile.linkedin.label} ↗
                 </a>
+                {profile.resume?.available && (
+                  <a
+                    className="lnk"
+                    href={profile.resume.url}
+                    target="_blank"
+                    rel="noopener"
+                    aria-label="Download resume (PDF)"
+                  >
+                    Download resume
+                  </a>
+                )}
               </div>
             </div>
           </section>
@@ -235,6 +247,7 @@ export default function App() {
               Have something worth <em>building?</em>
             </h2>
             <CopyEmailButton email={profile.email} />
+            <ContactForm email={profile.email} />
             <dl className="contact-rows">
               {contactRows.map((row) => (
                 <div key={row.label} className="row">
@@ -250,6 +263,21 @@ export default function App() {
                   </dd>
                 </div>
               ))}
+              {profile.resume?.available && (
+                <div className="row">
+                  <dt className="mono">Resume</dt>
+                  <dd>
+                    <a
+                      href={profile.resume.url}
+                      target="_blank"
+                      rel="noopener"
+                      aria-label="Download resume (PDF)"
+                    >
+                      Download resume
+                    </a>
+                  </dd>
+                </div>
+              )}
             </dl>
           </SectionShell>
         </main>

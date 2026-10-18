@@ -4,6 +4,11 @@
 
 // ─── Types ──────────────────────────────────
 
+export interface ResumeData {
+  url: string
+  available: boolean
+}
+
 export interface Profile {
   name: { first: string; middle: string; last: string }
   role: string
@@ -13,6 +18,7 @@ export interface Profile {
   email: string
   github: { url: string; label: string }
   linkedin: { url: string; label: string }
+  resume: ResumeData
 }
 
 export interface AboutData {
@@ -79,6 +85,10 @@ export const profile: Profile = {
   linkedin: {
     url: 'https://www.linkedin.com/in/naman-deep-tripathi-2709a6286/',
     label: 'LinkedIn',
+  },
+  resume: {
+    url: '/resume.pdf',
+    available: false,
   },
 }
 
