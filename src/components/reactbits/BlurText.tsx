@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, MotionConfig, type Easing, type MotionStyle, type Transition } from 'motion/react';
+import { LazyMotion, domAnimation, m, MotionConfig, type Easing, type MotionStyle, type Transition } from 'motion/react';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 
 type Snapshot = Record<string, string | number>;
@@ -243,11 +243,15 @@ const BlurText = ({
 }: BlurTextProps) => {
   const ref = useRef<HTMLElement>(null);
   const [phase, setPhase] = useState<Phase>(() => startPhase(trigger));
-  const firstPhase = useRef(phase).current;
+  // Preserves initial phase across renders without accessing ref during render
+  const [firstPhase] = useState(phase);
   const [focusWord, setFocusWord] = useState(-1);
   const settledRef = useRef(phase === 'rest');
   const completeRef = useRef(onAnimationComplete);
-  completeRef.current = onAnimationComplete;
+
+  useEffect(() => {
+    completeRef.current = onAnimationComplete;
+  }, [onAnimationComplete]);
 
   const fx = useMemo(() => buildEffect(effect, direction, blur, distance), [effect, direction, blur, distance]);
 
@@ -300,6 +304,8 @@ const BlurText = ({
   useEffect(() => {
     if (phase !== 'from') return undefined;
     if (trigger === 'load') {
+      // React Bits animation lifecycle: component mounts in 'from' blur state, then immediately transitions to 'in' on mount to trigger the intro animation.
+      // oxlint-disable-next-line react/set-state-in-effect
       setPhase('in');
       return undefined;
     }
@@ -391,7 +397,7 @@ const BlurText = ({
       : pieceStyle;
 
     return (
-      <motion.span
+      <m.span
         aria-hidden="true"
         key={piece.key}
         className="inline-block will-change-[transform,filter,opacity]"
@@ -401,7 +407,7 @@ const BlurText = ({
         transition={transition}
       >
         {piece.content}
-      </motion.span>
+      </m.span>
     );
   };
 
@@ -418,29 +424,31 @@ const BlurText = ({
   const Tag = as as any || 'p';
 
   return (
-    <MotionConfig reducedMotion="user">
-      <Tag
-        ref={ref}
-        className={`blur-text ${as === 'span' ? 'inline-flex' : 'flex'} flex-wrap ${trigger === 'click' ? 'cursor-pointer' : ''} ${className}`}
-        style={{ color }}
-        aria-hidden={ariaHidden ? true : undefined}
-        onPointerEnter={trigger === 'hover' ? handleEnter : undefined}
-        onClick={trigger === 'click' ? replay : undefined}
-      >
-        {!ariaHidden && <span className="sr-only select-none">{text}</span>}
-        {groups.map((indices, w) => (
-          <span
-            key={`word-${w}`}
-            className="inline-flex"
-            style={wordStyle(w)}
-            onPointerEnter={focusOnHover ? () => setFocusWord(w) : undefined}
-            onPointerLeave={focusOnHover ? () => setFocusWord(-1) : undefined}
-          >
-            {indices.map(renderPiece)}
-          </span>
-        ))}
-      </Tag>
-    </MotionConfig>
+    <LazyMotion features={domAnimation}>
+      <MotionConfig reducedMotion="user">
+        <Tag
+          ref={ref}
+          className={`blur-text ${as === 'span' ? 'inline-flex' : 'flex'} flex-wrap ${trigger === 'click' ? 'cursor-pointer' : ''} ${className}`}
+          style={{ color }}
+          aria-hidden={ariaHidden ? true : undefined}
+          onPointerEnter={trigger === 'hover' ? handleEnter : undefined}
+          onClick={trigger === 'click' ? replay : undefined}
+        >
+          {!ariaHidden && <span className="sr-only select-none">{text}</span>}
+          {groups.map((indices, w) => (
+            <span
+              key={`word-${w}`}
+              className="inline-flex"
+              style={wordStyle(w)}
+              onPointerEnter={focusOnHover ? () => setFocusWord(w) : undefined}
+              onPointerLeave={focusOnHover ? () => setFocusWord(-1) : undefined}
+            >
+              {indices.map(renderPiece)}
+            </span>
+          ))}
+        </Tag>
+      </MotionConfig>
+    </LazyMotion>
   );
 };
 

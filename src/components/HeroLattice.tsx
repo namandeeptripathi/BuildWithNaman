@@ -1,5 +1,18 @@
 import { useEffect, useRef } from 'react'
-import * as THREE from 'three'
+import {
+  BufferAttribute,
+  BufferGeometry,
+  Group,
+  IcosahedronGeometry,
+  LineBasicMaterial,
+  LineSegments,
+  PerspectiveCamera,
+  Points,
+  PointsMaterial,
+  Scene,
+  WebGLRenderer,
+  WireframeGeometry,
+} from 'three'
 import { usePrefersReducedMotion } from '../lib/usePrefersReducedMotion'
 
 /**
@@ -22,9 +35,9 @@ export default function HeroLattice() {
     const root = document.documentElement
 
     // ─── Renderer ───
-    let renderer: THREE.WebGLRenderer
+    let renderer: WebGLRenderer
     try {
-      renderer = new THREE.WebGLRenderer({
+      renderer = new WebGLRenderer({
         canvas,
         antialias: true,
         alpha: true,
@@ -35,28 +48,36 @@ export default function HeroLattice() {
     }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
 
+    const onContextLost = (e: Event) => {
+      e.preventDefault()
+      running = false
+      canvas.classList.remove('ready')
+      canvas.style.display = 'none'
+    }
+    canvas.addEventListener('webglcontextlost', onContextLost, false)
+
     // ─── Scene ───
-    const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50)
+    const scene = new Scene()
+    const camera = new PerspectiveCamera(45, 1, 0.1, 50)
     camera.position.z = 6
-    const group = new THREE.Group()
+    const group = new Group()
     scene.add(group)
 
     // Outer wireframe
-    const outerGeo = new THREE.IcosahedronGeometry(1.55, 2)
-    const wire = new THREE.LineSegments(
-      new THREE.WireframeGeometry(outerGeo),
-      new THREE.LineBasicMaterial({ transparent: true, opacity: 0.34 }),
+    const outerGeo = new IcosahedronGeometry(1.55, 2)
+    const wire = new LineSegments(
+      new WireframeGeometry(outerGeo),
+      new LineBasicMaterial({ transparent: true, opacity: 0.34 }),
     )
-    const nodes = new THREE.Points(
+    const nodes = new Points(
       outerGeo,
-      new THREE.PointsMaterial({ size: 0.055, transparent: true, opacity: 0.95 }),
+      new PointsMaterial({ size: 0.055, transparent: true, opacity: 0.95 }),
     )
 
     // Inner counter-rotating shape
-    const inner = new THREE.LineSegments(
-      new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(0.8, 1)),
-      new THREE.LineBasicMaterial({ transparent: true, opacity: 0.3 }),
+    const inner = new LineSegments(
+      new WireframeGeometry(new IcosahedronGeometry(0.8, 1)),
+      new LineBasicMaterial({ transparent: true, opacity: 0.3 }),
     )
     group.add(wire, nodes, inner)
 
@@ -71,11 +92,11 @@ export default function HeroLattice() {
       pos[i * 3 + 1] = rad * Math.sin(ph) * Math.sin(th)
       pos[i * 3 + 2] = rad * Math.cos(ph)
     }
-    const dustGeo = new THREE.BufferGeometry()
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-    const dust = new THREE.Points(
+    const dustGeo = new BufferGeometry()
+    dustGeo.setAttribute('position', new BufferAttribute(pos, 3))
+    const dust = new Points(
       dustGeo,
-      new THREE.PointsMaterial({ size: 0.028, transparent: true, opacity: 0.7 }),
+      new PointsMaterial({ size: 0.028, transparent: true, opacity: 0.7 }),
     )
     group.add(dust)
 
@@ -91,10 +112,10 @@ export default function HeroLattice() {
       const brass = token('--brass')
       const ink = token('--ink')
       const muted = token('--muted')
-      ;(wire.material as THREE.LineBasicMaterial).color.set(brass)
-      ;(nodes.material as THREE.PointsMaterial).color.set(brass)
-      ;(inner.material as THREE.LineBasicMaterial).color.set(ink)
-      ;(dust.material as THREE.PointsMaterial).color.set(muted)
+      ;(wire.material as LineBasicMaterial).color.set(brass)
+      ;(nodes.material as PointsMaterial).color.set(brass)
+      ;(inner.material as LineBasicMaterial).color.set(ink)
+      ;(dust.material as PointsMaterial).color.set(muted)
       if (!running) draw()
     }
 
@@ -117,14 +138,14 @@ export default function HeroLattice() {
         baseX = hw * 0.3
         baseY = hh * 0.58
         group.scale.setScalar(0.8)
-        ;(wire.material as THREE.LineBasicMaterial).opacity = 0.24
-        ;(inner.material as THREE.LineBasicMaterial).opacity = 0.2
+        ;(wire.material as LineBasicMaterial).opacity = 0.24
+        ;(inner.material as LineBasicMaterial).opacity = 0.2
       } else {
         baseX = hw * 0.56
         baseY = hh * 0.28
         group.scale.setScalar(1)
-        ;(wire.material as THREE.LineBasicMaterial).opacity = 0.34
-        ;(inner.material as THREE.LineBasicMaterial).opacity = 0.3
+        ;(wire.material as LineBasicMaterial).opacity = 0.34
+        ;(inner.material as LineBasicMaterial).opacity = 0.3
       }
       group.position.set(baseX, baseY, 0)
       if (!running) draw()
@@ -180,6 +201,7 @@ export default function HeroLattice() {
     resize()
     applyColors()
     draw()
+    canvas.classList.add('ready')
 
     const ro = new ResizeObserver(resize)
     ro.observe(hero)
@@ -213,6 +235,7 @@ export default function HeroLattice() {
     // ─── Cleanup ───
     return () => {
       running = false
+      canvas.removeEventListener('webglcontextlost', onContextLost)
       ro.disconnect()
       io.disconnect()
       mo.disconnect()

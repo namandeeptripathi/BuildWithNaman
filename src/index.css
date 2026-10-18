@@ -137,6 +137,29 @@ a {
   color: var(--on-brass);
 }
 
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: 16px;
+  background: var(--surface);
+  color: var(--brass);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: 1px solid var(--brass);
+  border-radius: 2px;
+  z-index: 100;
+  text-decoration: none;
+}
+
+.skip-link:focus-visible {
+  top: 16px;
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+}
+
 .mono {
   font-family: var(--font-mono);
   font-size: 0.74rem;
@@ -239,6 +262,18 @@ a {
   z-index: 0;
   pointer-events: none;
   display: block;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+#stage.ready {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #stage {
+    transition: none;
+  }
 }
 
 .kicker {

@@ -10,12 +10,14 @@ export default defineConfig({
     {
       name: 'html-env-fallback',
       transformIndexHtml: {
-        order: 'post',
+        order: 'pre',
         handler(html: string) {
           const siteUrl = (process.env.VITE_SITE_URL || '').replace(/\/$/, '')
           if (!siteUrl) {
             // Remove canonical link tag when site URL is not configured to avoid invalid relative URL error in SEO audit
             html = html.replace(/<link rel="canonical" href="%VITE_SITE_URL%\/?" \/>\s*/, '')
+            // Replace remaining references with relative paths or empty
+            html = html.replaceAll('%VITE_SITE_URL%/', '')
             return html.replaceAll('%VITE_SITE_URL%', '')
           }
           return html.replaceAll('%VITE_SITE_URL%', siteUrl)

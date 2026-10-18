@@ -7,7 +7,7 @@ interface Props {
 export default function Header({ toggle }: Props) {
   return (
     <header className="top">
-      <a className="mark" href="#top" aria-label="Naman Deep Tripathi, back to top">
+      <a className="mark" href="#top" aria-label="NDT — Naman Deep Tripathi, back to top">
         NDT
       </a>
       <nav aria-label="Sections">

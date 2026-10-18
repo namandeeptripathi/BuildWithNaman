@@ -4,7 +4,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import SectionShell from './components/SectionShell'
 import ProjectRow from './components/ProjectRow'
-import HeroLattice from './components/HeroLattice'
+import LazyHeroLattice from './components/LazyHeroLattice'
 import ScrollProgress from './components/ScrollProgress'
 import CopyEmailButton from './components/CopyEmailButton'
 import ContactForm from './components/ContactForm'
@@ -26,6 +26,9 @@ export default function App() {
 
   return (
     <>
+      <a href="#top" className="skip-link">
+        Skip to content
+      </a>
       <ScrollProgress />
       <div className="page">
         <Header toggle={toggle} />
@@ -33,7 +36,7 @@ export default function App() {
         <main id="top">
           {/* Hero */}
           <section className="hero" aria-label="Introduction">
-            <HeroLattice />
+            <LazyHeroLattice />
             <div>
               <p className="kicker mono">
                 <b>{profile.kicker}</b>
@@ -205,6 +208,7 @@ export default function App() {
             </dl>
             <pre
               className="manifest"
+              tabIndex={0}
               aria-label="Stack at a glance, written as a Maven dependency list"
             >
               <code>
