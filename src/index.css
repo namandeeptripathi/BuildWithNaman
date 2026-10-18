@@ -1103,3 +1103,40 @@ footer {
   color: var(--brass);
 }
 
+/* ──────────────────────────────────────────────
+   Preloader — Native handwriting signature & progress
+   ────────────────────────────────────────────── */
+
+.preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: var(--ground, #0A1310);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.32s ease;
+}
+
+.preloader-overlay.is-exiting {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader-svg {
+  width: min(88vw, 840px);
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader-overlay {
+    transition-duration: 0.3s;
+  }
+}
+

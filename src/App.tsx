@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTheme } from './lib/useTheme'
 import { useMotionScope } from './lib/motion/useMotionScope'
 import Header from './components/Header'
@@ -8,6 +9,7 @@ import LazyHeroLattice from './components/LazyHeroLattice'
 import ScrollProgress from './components/ScrollProgress'
 import CopyEmailButton from './components/CopyEmailButton'
 import ContactForm from './components/ContactForm'
+import Preloader from './components/Preloader'
 import BlurText from './components/reactbits/BlurText'
 import {
   about,
@@ -23,9 +25,13 @@ import {
 export default function App() {
   const { toggle } = useTheme()
   useMotionScope()
+  const [preloaderComplete, setPreloaderComplete] = useState(false)
 
   return (
     <>
+      {!preloaderComplete && (
+        <Preloader onComplete={() => setPreloaderComplete(true)} />
+      )}
       <a href="#top" className="skip-link">
         Skip to content
       </a>
