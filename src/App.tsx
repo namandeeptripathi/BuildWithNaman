@@ -1,5 +1,5 @@
 import { useTheme } from './lib/useTheme'
-import { useReveal } from './lib/useReveal'
+import { useMotionScope } from './lib/motion/useMotionScope'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import SectionShell from './components/SectionShell'
@@ -21,7 +21,7 @@ import {
 
 export default function App() {
   const { toggle } = useTheme()
-  useReveal()
+  useMotionScope()
 
   return (
     <>
@@ -138,7 +138,31 @@ export default function App() {
           </SectionShell>
 
           {/* Work */}
-          <SectionShell id="work" label="Selected work">
+          <SectionShell
+            id="work"
+            label="Selected work"
+            adornment={
+              <svg className="work-line-svg" aria-hidden="true">
+                <line
+                  className="work-line"
+                  stroke="var(--brass)"
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                />
+                <g className="work-node work-node-0">
+                  <circle r="4" stroke="var(--brass)" strokeWidth="1" fill="var(--bg)" />
+                  <circle className="work-node-fill" r="2.5" fill="var(--brass)" opacity="0" />
+                </g>
+                <g className="work-node work-node-1">
+                  <circle r="4" stroke="var(--brass)" strokeWidth="1" fill="var(--bg)" />
+                  <circle className="work-node-fill" r="2.5" fill="var(--brass)" opacity="0" />
+                </g>
+                <g className="work-node work-node-2">
+                  <circle r="4" stroke="var(--brass)" strokeWidth="1" fill="var(--bg)" />
+                </g>
+              </svg>
+            }
+          >
             <div className="pieces">
               {projects.map((project) => (
                 <ProjectRow key={project.title} project={project} />
@@ -153,8 +177,15 @@ export default function App() {
                 <div key={group.label} className="row">
                   <dt className="mono">{group.label}</dt>
                   <dd>
-                    {group.items.map((item) => (
-                      <span key={item}>{item}</span>
+                    {group.items.map((item, idx) => (
+                      <span key={item}>
+                        {idx > 0 && (
+                          <span className="sep" aria-hidden="true">
+                            /
+                          </span>
+                        )}
+                        {item}
+                      </span>
                     ))}
                   </dd>
                 </div>
@@ -165,20 +196,23 @@ export default function App() {
               aria-label="Stack at a glance, written as a Maven dependency list"
             >
               <code>
-                <span className="c">{manifestComment}</span>
-                {'\n'}
-                <span className="t">&lt;dependencies&gt;</span>
-                {'\n'}
+                <span className="m-line">
+                  <span className="c">{manifestComment}</span>
+                </span>
+                <span className="m-line">
+                  <span className="t">&lt;dependencies&gt;</span>
+                </span>
                 {manifestLines.map((line, i) => (
-                  <span key={i}>
+                  <span key={i} className="m-line">
                     {'  '}
                     <span className="t">{line.tag}</span>
                     <span className="v">{line.value}</span>
                     <span className="t">{line.closeTag}</span>
-                    {'\n'}
                   </span>
                 ))}
-                <span className="t">&lt;/dependencies&gt;</span>
+                <span className="m-line">
+                  <span className="t">&lt;/dependencies&gt;</span>
+                </span>
               </code>
             </pre>
           </SectionShell>

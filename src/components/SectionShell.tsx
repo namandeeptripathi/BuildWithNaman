@@ -7,6 +7,7 @@ interface Props {
   /** Override the default padding-top collapse from .sec + .sec */
   first?: boolean
   className?: string
+  adornment?: ReactNode
 }
 
 /**
@@ -20,6 +21,7 @@ export default function SectionShell({
   children,
   first,
   className = '',
+  adornment,
 }: Props) {
   return (
     <section
@@ -29,6 +31,8 @@ export default function SectionShell({
     >
       <h2 className="label mono">{label}</h2>
       <div>{children}</div>
+      {adornment}
     </section>
   )
 }
+
