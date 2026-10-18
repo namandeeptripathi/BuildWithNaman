@@ -1,6 +1,5 @@
 import { useTheme } from './lib/useTheme'
 import { useReveal } from './lib/useReveal'
-import { useTilt } from './lib/useTilt'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import SectionShell from './components/SectionShell'
@@ -23,7 +22,6 @@ import {
 export default function App() {
   const { toggle } = useTheme()
   useReveal()
-  useTilt()
 
   return (
     <>
