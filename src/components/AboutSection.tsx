@@ -1,0 +1,149 @@
+import SectionShell from './SectionShell'
+import { about } from '../data'
+
+interface Principle {
+  idx: string
+  title: string
+  tag: string
+  desc: string
+}
+
+const PRINCIPLES: Principle[] = [
+  {
+    idx: '01',
+    title: 'Build useful software',
+    tag: 'UTILITY',
+    desc: 'Crafting dependable, user-focused applications designed for production reliability and real-world utility.',
+  },
+  {
+    idx: '02',
+    title: 'Solve technical problems',
+    tag: 'SYSTEMS',
+    desc: 'Approaching backend complexity, distributed data flows, and performance bottlenecks through methodical engineering.',
+  },
+  {
+    idx: '03',
+    title: 'Keep experimenting',
+    tag: 'LEARNING',
+    desc: 'Continually prototyping new ideas, integrating modern AI/ML workflows, and advancing engineering skill with every build.',
+  },
+]
+
+/**
+ * Editorial About section with choreographed line reveals,
+ * gold emphasis, subtle technical SVG motif, and core principles.
+ */
+export default function AboutSection() {
+  return (
+    <>
+      {/* Top Divider with viewport-triggered draw animation */}
+      <div className="about-divider" aria-hidden="true">
+        <div className="about-divider-line" />
+      </div>
+
+      <SectionShell
+        id="about"
+        label="About"
+        first
+        adornment={
+          /* Subtle technical coordinate / architectural guideline motif in negative space */
+          <div className="about-motif" aria-hidden="true">
+            <svg
+              className="about-motif-svg"
+              viewBox="0 0 160 220"
+              fill="none"
+              aria-hidden="true"
+            >
+              <line
+                className="about-motif-line"
+                x1="8"
+                y1="0"
+                x2="8"
+                y2="180"
+                stroke="var(--brass)"
+                strokeWidth="1"
+                strokeDasharray="2 3"
+              />
+              <g className="about-motif-node" transform="translate(8, 36)">
+                <circle r="3.5" stroke="var(--brass)" strokeWidth="1" fill="var(--bg)" />
+                <circle r="1.5" fill="var(--brass)" />
+              </g>
+              <g className="about-motif-node" transform="translate(8, 126)">
+                <circle r="3.5" stroke="var(--teal)" strokeWidth="1" fill="var(--bg)" />
+                <circle r="1.5" fill="var(--teal)" />
+              </g>
+              <text
+                x="20"
+                y="39"
+                fill="var(--muted)"
+                fontSize="8"
+                fontFamily="var(--font-mono)"
+                letterSpacing="0.12em"
+                className="motif-text"
+              >
+                27.49°N · 77.67°E
+              </text>
+              <text
+                x="20"
+                y="129"
+                fill="var(--muted)"
+                fontSize="8"
+                fontFamily="var(--font-mono)"
+                letterSpacing="0.12em"
+                className="motif-text"
+              >
+                CORE // ARCH_01
+              </text>
+            </svg>
+          </div>
+        }
+      >
+        {/* Line-by-line masked editorial headline */}
+        <h3
+          className="lead about-lead"
+          aria-label="I'm a software developer interested in backend engineering, building web applications, and developing AI-powered solutions."
+        >
+          <span className="about-line-mask">
+            <span className="about-line">
+              I'm a software developer interested in{' '}
+            </span>
+          </span>
+          <span className="about-line-mask">
+            <span className="about-line">
+              <em>backend engineering</em>, building web applications,{' '}
+            </span>
+          </span>
+          <span className="about-line-mask">
+            <span className="about-line">
+              and developing <em>AI-powered solutions</em>.
+            </span>
+          </span>
+        </h3>
+
+        {/* Staggered body prose */}
+        <p className="prose about-prose">{about.prose}</p>
+
+        {/* Supporting principles triad */}
+        <div className="about-principles" aria-label="Core Engineering Principles">
+          <div className="about-principles-header" aria-hidden="true">
+            <span className="principles-kicker mono">CORE PRINCIPLES</span>
+            <span className="about-principles-line" />
+          </div>
+
+          <div className="principles-grid">
+            {PRINCIPLES.map((item) => (
+              <div key={item.idx} className="about-principle">
+                <div className="principle-meta">
+                  <span className="principle-idx mono">{item.idx}</span>
+                  <span className="principle-tag mono">{item.tag}</span>
+                </div>
+                <h4 className="principle-title">{item.title}</h4>
+                <p className="principle-desc">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </SectionShell>
+    </>
+  )
+}

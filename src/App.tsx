@@ -11,8 +11,8 @@ import CopyEmailButton from './components/CopyEmailButton'
 import ContactForm from './components/ContactForm'
 import Preloader from './components/Preloader'
 import BlurText from './components/reactbits/BlurText'
+import AboutSection from './components/AboutSection'
 import {
-  about,
   contactRows,
   experience,
   manifestComment,
@@ -150,17 +150,8 @@ export default function App() {
             </div>
           </section>
 
-          <div className="rule" aria-hidden="true" />
-
           {/* About */}
-          <SectionShell id="about" label="About" first>
-            <p className="lead">
-              {about.leadPrefix}
-              <em>{about.leadEmphasis}</em>
-              {about.leadSuffix}
-            </p>
-            <p className="prose">{about.prose}</p>
-          </SectionShell>
+          <AboutSection />
 
           {/* Work */}
           <SectionShell
