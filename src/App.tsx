@@ -43,9 +43,10 @@ export default function App() {
           {/* Hero */}
           <section className="hero" aria-label="Introduction">
             <LazyHeroLattice />
-            <div>
+            <div className="hero-identity">
               <p className="kicker mono">
                 <b>{profile.kicker}</b>
+                <span className="kicker-sep" aria-hidden="true">·</span>
                 <span>{profile.location}</span>
               </p>
               <h1
@@ -107,10 +108,10 @@ export default function App() {
                   />
                 </span>
               </h1>
+              <p className="role mono">{profile.role}</p>
             </div>
             <div className="hero-side">
               <p className="tagline">{profile.tagline}</p>
-              <p className="role mono">{profile.role}</p>
               <div className="cta">
                 <a className="btn" href="#work">
                   View work
@@ -143,6 +144,9 @@ export default function App() {
                   </a>
                 )}
               </div>
+            </div>
+            <div className="hero-scroll-hint" aria-hidden="true">
+              <span className="scroll-line" />
             </div>
           </section>
 
