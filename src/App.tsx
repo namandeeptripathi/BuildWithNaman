@@ -4,7 +4,7 @@ import { useMotionScope } from './lib/motion/useMotionScope'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import SectionShell from './components/SectionShell'
-import ProjectRow from './components/ProjectRow'
+import ProjectsCarouselSection from './components/ProjectsCarouselSection'
 import LazyHeroLattice from './components/LazyHeroLattice'
 import ScrollProgress from './components/ScrollProgress'
 import CopyEmailButton from './components/CopyEmailButton'
@@ -18,7 +18,6 @@ import {
   manifestComment,
   manifestLines,
   profile,
-  projects,
   skillGroups,
 } from './data'
 
@@ -154,37 +153,7 @@ export default function App() {
           <AboutSection />
 
           {/* Work */}
-          <SectionShell
-            id="work"
-            label="Selected work"
-            adornment={
-              <svg className="work-line-svg" aria-hidden="true">
-                <line
-                  className="work-line"
-                  stroke="var(--brass)"
-                  strokeWidth="1"
-                  strokeLinecap="round"
-                />
-                <g className="work-node work-node-0">
-                  <circle r="4" stroke="var(--brass)" strokeWidth="1" fill="var(--bg)" />
-                  <circle className="work-node-fill" r="2.5" fill="var(--brass)" opacity="0" />
-                </g>
-                <g className="work-node work-node-1">
-                  <circle r="4" stroke="var(--brass)" strokeWidth="1" fill="var(--bg)" />
-                  <circle className="work-node-fill" r="2.5" fill="var(--brass)" opacity="0" />
-                </g>
-                <g className="work-node work-node-2">
-                  <circle r="4" stroke="var(--brass)" strokeWidth="1" fill="var(--bg)" />
-                </g>
-              </svg>
-            }
-          >
-            <div className="pieces">
-              {projects.map((project) => (
-                <ProjectRow key={project.title} project={project} />
-              ))}
-            </div>
-          </SectionShell>
+          <ProjectsCarouselSection />
 
           {/* Stack */}
           <SectionShell id="stack" label="Skills & stack">

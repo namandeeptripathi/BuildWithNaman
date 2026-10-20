@@ -1,0 +1,89 @@
+<svg viewBox="0 0 1600 803" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="devflow-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#23382F" stroke-width="0.75" stroke-opacity="0.5" />
+    </pattern>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="1600" y2="803" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#122019" />
+      <stop offset="100%" stop-color="#0A1310" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background surface and grid -->
+  <rect width="1600" height="803" fill="url(#bg-grad)" />
+  <rect width="1600" height="803" fill="url(#devflow-grid)" />
+
+  <!-- Top Browser Bar -->
+  <rect width="1600" height="44" fill="#0E1B15" />
+  <line x1="0" y1="44" x2="1600" y2="44" stroke="#23382F" stroke-width="1" />
+  <circle cx="28" cy="22" r="5" fill="#E06C75" opacity="0.8" />
+  <circle cx="46" cy="22" r="5" fill="#E5C07B" opacity="0.8" />
+  <circle cx="64" cy="22" r="5" fill="#98C379" opacity="0.8" />
+  <rect x="96" y="10" width="320" height="24" rx="3" fill="#162720" stroke="#23382F" stroke-width="0.75" />
+  <text x="110" y="26" fill="#93A398" font-family="'DM Mono', monospace" font-size="11" letter-spacing="0.04em">devflow-ai.internal/workflow</text>
+
+  <!-- Workflow Edges -->
+  <g stroke="#C8A25E" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="5 5">
+    <!-- Spec -> Orchestrator -->
+    <path d="M 460 300 C 620 300, 660 420, 750 420" />
+    <!-- Code Synthesis -> Orchestrator -->
+    <path d="M 460 540 C 620 540, 660 420, 750 420" />
+    <!-- Orchestrator -> Review -->
+    <path d="M 850 420 C 940 420, 980 300, 1140 300" />
+    <!-- Orchestrator -> Analytics -->
+    <path d="M 850 420 C 940 420, 980 540, 1140 540" />
+    <!-- Top Feedback loop -->
+    <path d="M 1140 300 C 1240 300, 1260 190, 800 190 C 480 190, 460 240, 460 280" stroke-opacity="0.25" />
+  </g>
+
+  <!-- Connecting coordinate axes -->
+  <g stroke="#C8A25E" stroke-opacity="0.6" stroke-width="1.5">
+    <line x1="730" y1="420" x2="870" y2="420" />
+    <line x1="800" y1="350" x2="800" y2="490" />
+  </g>
+
+  <!-- Orchestrator Central Node -->
+  <circle cx="800" cy="420" r="46" fill="#0A1310" stroke="#C8A25E" stroke-width="2" />
+  <circle cx="800" cy="420" r="36" fill="none" stroke="#23382F" stroke-width="1" stroke-dasharray="3 3" />
+  <circle cx="800" cy="420" r="7" fill="#C8A25E" />
+  <text x="800" y="490" text-anchor="middle" fill="#F3F6F2" font-family="'DM Mono', monospace" font-size="13" font-weight="600" letter-spacing="0.14em">
+    ORCHESTRATOR
+  </text>
+
+  <!-- Node 1: Spec Agent -->
+  <circle cx="420" cy="300" r="30" fill="#0A1310" stroke="#C8A25E" stroke-width="1.5" />
+  <circle cx="420" cy="300" r="5" fill="#3DA8A0" />
+  <text x="420" y="352" text-anchor="middle" fill="#93A398" font-family="'DM Mono', monospace" font-size="12" letter-spacing="0.12em">
+    SPRINT &amp; SPEC AGENT
+  </text>
+
+  <!-- Node 2: Code Gen Agent -->
+  <circle cx="420" cy="540" r="30" fill="#0A1310" stroke="#C8A25E" stroke-width="1.5" />
+  <circle cx="420" cy="540" r="5" fill="#C8A25E" />
+  <text x="420" y="592" text-anchor="middle" fill="#93A398" font-family="'DM Mono', monospace" font-size="12" letter-spacing="0.12em">
+    CODE SYNTHESIS
+  </text>
+
+  <!-- Node 3: Review & Test Agent -->
+  <circle cx="1180" cy="300" r="30" fill="#0A1310" stroke="#C8A25E" stroke-width="1.5" />
+  <circle cx="1180" cy="300" r="5" fill="#3DA8A0" />
+  <text x="1180" y="352" text-anchor="middle" fill="#93A398" font-family="'DM Mono', monospace" font-size="12" letter-spacing="0.12em">
+    REVIEW &amp; VERIFY
+  </text>
+
+  <!-- Node 4: RAG Knowledge Store -->
+  <circle cx="1180" cy="540" r="30" fill="#0A1310" stroke="#C8A25E" stroke-width="1.5" />
+  <circle cx="1180" cy="540" r="5" fill="#C8A25E" />
+  <text x="1180" y="592" text-anchor="middle" fill="#93A398" font-family="'DM Mono', monospace" font-size="12" letter-spacing="0.12em">
+    RAG &amp; ANALYTICS
+  </text>
+
+  <!-- Status Badge at bottom left -->
+  <g transform="translate(64, 730)">
+    <rect x="0" y="0" width="156" height="34" rx="3" fill="#0A1310" stroke="#C8A25E" stroke-width="1" />
+    <circle cx="18" cy="17" r="4" fill="none" stroke="#C8A25E" stroke-width="1.5" />
+    <text x="32" y="22" fill="#C8A25E" font-family="'DM Mono', monospace" font-size="11.5" font-weight="600" letter-spacing="0.16em">
+      IN PROGRESS
+    </text>
+  </g>
+</svg>
