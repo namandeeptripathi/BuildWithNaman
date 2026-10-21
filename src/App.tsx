@@ -3,21 +3,15 @@ import { useTheme } from './lib/useTheme'
 import { useMotionScope } from './lib/motion/useMotionScope'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import SectionShell from './components/SectionShell'
 import ProjectsCarouselSection from './components/ProjectsCarouselSection'
 import LazyHeroLattice from './components/LazyHeroLattice'
 import ScrollProgress from './components/ScrollProgress'
-import CopyEmailButton from './components/CopyEmailButton'
-import ContactForm from './components/ContactForm'
 import Preloader from './components/Preloader'
 import BlurText from './components/reactbits/BlurText'
 import AboutSection from './components/AboutSection'
 import SkillsSection from './components/SkillsSection'
-import {
-  contactRows,
-  experience,
-  profile,
-} from './data'
+import ContactSection from './components/ContactSection'
+import { profile } from './data'
 
 export default function App() {
   const { toggle } = useTheme()
@@ -156,57 +150,8 @@ export default function App() {
           {/* Stack */}
           <SkillsSection />
 
-          {/* Experience */}
-          <SectionShell id="experience" label="Experience">
-            <p className="xp-lead">{experience.lead}</p>
-            <ul className="tags" aria-label="Areas of work">
-              {experience.tags.map((tag) => (
-                <li key={tag} className="tag">
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          </SectionShell>
-
           {/* Contact */}
-          <SectionShell id="contact" label="Contact" className="contact">
-            <h2>
-              Have something worth <em>building?</em>
-            </h2>
-            <CopyEmailButton email={profile.email} />
-            <ContactForm email={profile.email} />
-            <dl className="contact-rows">
-              {contactRows.map((row) => (
-                <div key={row.label} className="row">
-                  <dt className="mono">{row.label}</dt>
-                  <dd>
-                    {row.url ? (
-                      <a href={row.url} target="_blank" rel="noopener">
-                        {row.value}
-                      </a>
-                    ) : (
-                      row.value
-                    )}
-                  </dd>
-                </div>
-              ))}
-              {profile.resume?.available && (
-                <div className="row">
-                  <dt className="mono">Resume</dt>
-                  <dd>
-                    <a
-                      href={profile.resume.url}
-                      target="_blank"
-                      rel="noopener"
-                      aria-label="Download resume (PDF)"
-                    >
-                      Download resume
-                    </a>
-                  </dd>
-                </div>
-              )}
-            </dl>
-          </SectionShell>
+          <ContactSection />
         </main>
 
         <Footer />

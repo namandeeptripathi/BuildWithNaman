@@ -38,8 +38,8 @@ export default function CopyEmailButton({ email }: Props) {
   }, [email, flash, selectEmail])
 
   return (
-    <div className="mailrow">
-      <span className="mail" ref={emailRef} id="email">
+    <div className="mailrow" aria-label="Direct email contact">
+      <span className="mail mono" ref={emailRef} id="email">
         {email}
       </span>
       <button
@@ -47,10 +47,15 @@ export default function CopyEmailButton({ email }: Props) {
         id="copy"
         type="button"
         onClick={handleCopy}
+        aria-label={`Copy email address ${email}`}
       >
         {label}
       </button>
-      <a className="lnk" href={`mailto:${email}`}>
+      <a
+        className="lnk"
+        href={`mailto:${email}`}
+        aria-label={`Write an email to ${email}`}
+      >
         Write an email ↗
       </a>
     </div>

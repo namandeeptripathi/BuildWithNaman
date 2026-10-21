@@ -201,12 +201,12 @@ export const experience: ExperienceData = {
 export const contactRows: ContactRow[] = [
   {
     label: 'GitHub',
-    value: 'github.com/namandeeptripathi',
+    value: 'GitHub',
     url: 'https://github.com/namandeeptripathi',
   },
   {
     label: 'LinkedIn',
-    value: 'linkedin.com/in/naman-deep-tripathi-2709a6286',
+    value: 'LinkedIn',
     url: 'https://www.linkedin.com/in/naman-deep-tripathi-2709a6286/',
   },
   { label: 'Location', value: 'Mathura, India' },

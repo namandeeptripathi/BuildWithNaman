@@ -8,7 +8,7 @@ import { animate, onScroll, stagger } from 'animejs'
  * Triggers once when ~15% enters viewport and does not replay on scroll back.
  */
 export function initRevealSections(root: HTMLElement | Document = document) {
-  const sectionIds = ['about', 'work', 'stack', 'experience', 'contact']
+  const sectionIds = ['about', 'work', 'stack', 'contact']
 
   sectionIds.forEach((id) => {
     const section = root.querySelector<HTMLElement>(`#${id}`)
@@ -151,32 +151,16 @@ export function initRevealSections(root: HTMLElement | Document = document) {
           },
         })
       })
-    } else if (id === 'experience') {
-      const items = section.querySelectorAll<HTMLElement>('.xp-lead, .tags')
-      if (items.length > 0) {
-        onScroll({
-          target: section,
-          enter: 'bottom 15%',
-          repeat: false,
-          onEnter: () => {
-            animate(Array.from(items), {
-              y: [24, 0],
-              opacity: [0.35, 1],
-              duration: 800,
-              delay: stagger(70),
-              ease: 'outExpo',
-            })
-          },
-        })
-      }
     } else if (id === 'contact') {
-      const heading = section.querySelector<HTMLElement>('h2:not(.label)')
+      const heading = section.querySelector<HTMLElement>('.contact-headline')
+      const prose = section.querySelector<HTMLElement>('.contact-prose')
       const mailrow = section.querySelector<HTMLElement>('.mailrow')
-      const rows = section.querySelectorAll<HTMLElement>('.contact-rows .row')
+      const grid = section.querySelector<HTMLElement>('.contact-grid')
       const items: HTMLElement[] = []
       if (heading) items.push(heading)
+      if (prose) items.push(prose)
       if (mailrow) items.push(mailrow)
-      rows.forEach((r) => items.push(r))
+      if (grid) items.push(grid)
 
       if (items.length > 0) {
         onScroll({
@@ -185,10 +169,10 @@ export function initRevealSections(root: HTMLElement | Document = document) {
           repeat: false,
           onEnter: () => {
             animate(items, {
-              y: [24, 0],
+              y: [20, 0],
               opacity: [0.35, 1],
               duration: 800,
-              delay: stagger(70),
+              delay: stagger(60),
               ease: 'outExpo',
             })
           },

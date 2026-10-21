@@ -97,7 +97,6 @@ export default function ContactForm({ email }: Props) {
     setErrors(errs)
 
     if (Object.keys(errs).length > 0) {
-      // Focus first field with error
       if (errs.name) {
         document.getElementById('contact-name')?.focus()
       } else if (errs.email) {
@@ -122,7 +121,7 @@ export default function ContactForm({ email }: Props) {
 
     const formspreeId = (import.meta.env.VITE_FORMSPREE_ID || '').trim()
 
-    // If VITE_FORMSPREE_ID is not configured
+    // Truthful feedback: If VITE_FORMSPREE_ID is not configured
     if (!formspreeId) {
       setStatus('not-connected')
       return
@@ -174,13 +173,13 @@ export default function ContactForm({ email }: Props) {
   if (status === 'success') {
     return (
       <div className="contact-status-card contact-success-card" role="status" aria-live="polite">
-        <p className="contact-status-message">Thanks, your message is on its way.</p>
+        <p className="contact-status-message">Thanks, your message has been sent successfully. I will get back to you shortly.</p>
         <button
           type="button"
           onClick={handleReset}
           className="contact-text-btn mono"
         >
-          Send another
+          Send another message
         </button>
       </div>
     )
@@ -195,18 +194,23 @@ export default function ContactForm({ email }: Props) {
           aria-live="polite"
         >
           <p className="contact-status-message">
-            Contact form is not connected yet. Please email me directly:
+            The contact form is not connected to a live email service. Please send your message directly via email:
           </p>
-          <div className="contact-status-email-row">
+          <div className="contact-status-actions">
             <span className="mail mono">{email}</span>
             <button
               type="button"
               className="copy"
               onClick={handleCopyEmail}
+              aria-label={`Copy email address ${email}`}
             >
               {copyLabel}
             </button>
-            <a className="lnk" href={`mailto:${email}`}>
+            <a
+              className="lnk"
+              href={`mailto:${email}?subject=Project%20Inquiry%20from%20Portfolio&body=${encodeURIComponent(message || '')}`}
+              aria-label={`Write an email to ${email}`}
+            >
               Write an email ↗
             </a>
           </div>
@@ -220,18 +224,23 @@ export default function ContactForm({ email }: Props) {
           aria-live="polite"
         >
           <p className="contact-status-message">
-            Something went wrong. You can also email me directly:
+            Something went wrong while sending. Please reach out directly via email:
           </p>
-          <div className="contact-status-email-row">
+          <div className="contact-status-actions">
             <span className="mail mono">{email}</span>
             <button
               type="button"
               className="copy"
               onClick={handleCopyEmail}
+              aria-label={`Copy email address ${email}`}
             >
               {copyLabel}
             </button>
-            <a className="lnk" href={`mailto:${email}`}>
+            <a
+              className="lnk"
+              href={`mailto:${email}?subject=Project%20Inquiry%20from%20Portfolio&body=${encodeURIComponent(message || '')}`}
+              aria-label={`Write an email to ${email}`}
+            >
               Write an email ↗
             </a>
           </div>
@@ -258,60 +267,64 @@ export default function ContactForm({ email }: Props) {
           />
         </div>
 
-        <div className="contact-field">
-          <label htmlFor="contact-name" className="contact-label mono">
-            Name
-          </label>
-          <input
-            id="contact-name"
-            name="name"
-            type="text"
-            autoComplete="name"
-            className="contact-input"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value)
-              if (hasSubmitted && errors.name) {
-                setErrors((prev) => ({ ...prev, name: validateField('name', e.target.value) }))
-              }
-            }}
-            onBlur={() => handleBlur('name')}
-            aria-invalid={Boolean(errors.name)}
-            aria-describedby={errors.name ? 'contact-name-error' : undefined}
-          />
-          {errors.name && (
-            <span id="contact-name-error" className="contact-error mono" role="alert">
-              {errors.name}
-            </span>
-          )}
-        </div>
+        <div className="contact-form-row">
+          <div className="contact-field">
+            <label htmlFor="contact-name" className="contact-label mono">
+              Name
+            </label>
+            <input
+              id="contact-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              placeholder="Your name"
+              className="contact-input"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value)
+                if (hasSubmitted && errors.name) {
+                  setErrors((prev) => ({ ...prev, name: validateField('name', e.target.value) }))
+                }
+              }}
+              onBlur={() => handleBlur('name')}
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? 'contact-name-error' : undefined}
+            />
+            {errors.name && (
+              <span id="contact-name-error" className="contact-error mono" role="alert">
+                {errors.name}
+              </span>
+            )}
+          </div>
 
-        <div className="contact-field">
-          <label htmlFor="contact-email" className="contact-label mono">
-            Email
-          </label>
-          <input
-            id="contact-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            className="contact-input"
-            value={userEmail}
-            onChange={(e) => {
-              setUserEmail(e.target.value)
-              if (hasSubmitted && errors.email) {
-                setErrors((prev) => ({ ...prev, email: validateField('email', e.target.value) }))
-              }
-            }}
-            onBlur={() => handleBlur('email')}
-            aria-invalid={Boolean(errors.email)}
-            aria-describedby={errors.email ? 'contact-email-error' : undefined}
-          />
-          {errors.email && (
-            <span id="contact-email-error" className="contact-error mono" role="alert">
-              {errors.email}
-            </span>
-          )}
+          <div className="contact-field">
+            <label htmlFor="contact-email" className="contact-label mono">
+              Email
+            </label>
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="your.email@example.com"
+              className="contact-input"
+              value={userEmail}
+              onChange={(e) => {
+                setUserEmail(e.target.value)
+                if (hasSubmitted && errors.email) {
+                  setErrors((prev) => ({ ...prev, email: validateField('email', e.target.value) }))
+                }
+              }}
+              onBlur={() => handleBlur('email')}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? 'contact-email-error' : undefined}
+            />
+            {errors.email && (
+              <span id="contact-email-error" className="contact-error mono" role="alert">
+                {errors.email}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="contact-field">
@@ -321,7 +334,8 @@ export default function ContactForm({ email }: Props) {
           <textarea
             id="contact-message"
             name="message"
-            rows={5}
+            rows={4}
+            placeholder="Tell me about your project, idea, or role..."
             className="contact-input contact-textarea"
             value={message}
             onChange={(e) => {
@@ -344,11 +358,11 @@ export default function ContactForm({ email }: Props) {
         <div className="contact-action">
           <button
             type="submit"
-            className="btn contact-submit-btn"
+            className="contact-submit-btn"
             disabled={status === 'sending'}
             aria-busy={status === 'sending'}
           >
-            {status === 'sending' ? 'Sending...' : 'Send message'}
+            <span>{status === 'sending' ? 'Sending message...' : 'Send message ↗'}</span>
           </button>
         </div>
       </form>
