@@ -12,13 +12,11 @@ import ContactForm from './components/ContactForm'
 import Preloader from './components/Preloader'
 import BlurText from './components/reactbits/BlurText'
 import AboutSection from './components/AboutSection'
+import SkillsSection from './components/SkillsSection'
 import {
   contactRows,
   experience,
-  manifestComment,
-  manifestLines,
   profile,
-  skillGroups,
 } from './data'
 
 export default function App() {
@@ -156,52 +154,7 @@ export default function App() {
           <ProjectsCarouselSection />
 
           {/* Stack */}
-          <SectionShell id="stack" label="Skills & stack">
-            <dl className="stack-rows">
-              {skillGroups.map((group) => (
-                <div key={group.label} className="row">
-                  <dt className="mono">{group.label}</dt>
-                  <dd>
-                    {group.items.map((item, idx) => (
-                      <span key={item}>
-                        {idx > 0 && (
-                          <span className="sep" aria-hidden="true">
-                            /
-                          </span>
-                        )}
-                        {item}
-                      </span>
-                    ))}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-            <pre
-              className="manifest"
-              tabIndex={0}
-              aria-label="Stack at a glance, written as a Maven dependency list"
-            >
-              <code>
-                <span className="m-line">
-                  <span className="c">{manifestComment}</span>
-                </span>
-                <span className="m-line">
-                  <span className="t">&lt;dependencies&gt;</span>
-                </span>
-                {manifestLines.map((line, i) => (
-                  <span key={i} className="m-line">
-                    {'  '}
-                    <span className="t">{line.tag}</span>
-                    <span className="v">{line.value}</span>
-                    <span className="t">{line.closeTag}</span>
-                  </span>
-                ))}
-                <span className="m-line">
-                  <span className="t">&lt;/dependencies&gt;</span>
-                </span>
-              </code>
-            </pre>
-          </SectionShell>
+          <SkillsSection />
 
           {/* Experience */}
           <SectionShell id="experience" label="Experience">

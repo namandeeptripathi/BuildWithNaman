@@ -14,8 +14,8 @@ export function initRevealSections(root: HTMLElement | Document = document) {
     const section = root.querySelector<HTMLElement>(`#${id}`)
     if (!section) return
 
-    // 1. Section label slides in from left (for sections other than about)
-    if (id !== 'about') {
+    // 1. Section label slides in from left (for sections other than about and stack)
+    if (id !== 'about' && id !== 'stack') {
       const label = section.querySelector<HTMLElement>(':scope > .label, .sec-label, .label')
       if (label) {
         onScroll({

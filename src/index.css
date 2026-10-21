@@ -1708,69 +1708,86 @@ h1.name > .mid {
 }
 
 /* ──────────────────────────────────────────────
-   Stack
+   Stack / Skills (Editorial Interactive Portfolio)
    ────────────────────────────────────────────── */
 
-.stack-rows {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
+.stack-section {
+  position: relative;
 }
 
-.stack-rows .row {
-  display: grid;
-  grid-template-columns: minmax(0, 150px) minmax(0, 1fr);
-  gap: 8px 24px;
-  padding-block: 18px;
-  border-top: 1px solid var(--rule);
-}
-
-.stack-rows .row:last-child {
-  border-bottom: 1px solid var(--rule);
-}
-
-.stack-rows dt {
-  margin: 0;
-  color: var(--muted);
-  padding-top: 3px;
-}
-
-.stack-rows dd {
-  margin: 0;
-}
-
-.stack-rows .sep {
-  color: var(--brass);
-  margin: 0 0.6em;
-  display: inline-block;
-}
-
-.manifest {
-  margin: 32px 0 0;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  padding: 22px 24px;
-  overflow-x: auto;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  line-height: 1.8;
-  color: var(--ink);
-}
-
-.manifest .m-line {
+.stack-section > .label {
   display: block;
+  width: 100%;
 }
 
-.manifest .c {
-  color: var(--muted);
+/* Staggered entrance for technology constellation sectors on viewport entry */
+@media (prefers-reduced-motion: no-preference) {
+  .stack-section[data-motion="true"][data-revealed="false"] > .label {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .stack-section[data-motion="true"][data-revealed="false"] .constellation-ecosystem {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .stack-section[data-motion="true"][data-revealed="false"] .constellation-sector {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  /* Revealed state when section enters viewport */
+  .stack-section[data-revealed="true"] > .label {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .stack-section[data-revealed="true"] .constellation-ecosystem {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .stack-section[data-revealed="true"] .constellation-sector {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .stack-section[data-revealed="true"] .sector-backend {
+    transition-delay: 60ms;
+  }
+  .stack-section[data-revealed="true"] .sector-languages {
+    transition-delay: 120ms;
+  }
+  .stack-section[data-revealed="true"] .sector-aiml {
+    transition-delay: 180ms;
+  }
+  .stack-section[data-revealed="true"] .sector-dataclient {
+    transition-delay: 240ms;
+  }
+  .stack-section[data-revealed="true"] .sector-foundations {
+    transition-delay: 300ms;
+  }
 }
 
-.manifest .t {
-  color: var(--muted);
-}
-
-.manifest .v {
-  color: var(--brass);
+@media (prefers-reduced-motion: reduce) {
+  .stack-section .constellation-ecosystem,
+  .stack-section .constellation-sector,
+  .stack-section > .label {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
 
 /* ──────────────────────────────────────────────
@@ -1923,7 +1940,6 @@ footer {
 }
 
 @media (max-width: 520px) {
-  .stack-rows .row,
   .contact-rows .row {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -2032,7 +2048,6 @@ footer {
   }
 
   html.motion-ready #work > .label,
-  html.motion-ready #stack > .label,
   html.motion-ready #experience > .label,
   html.motion-ready #contact > .label {
     opacity: 0.35;
@@ -2048,23 +2063,6 @@ footer {
   html.motion-ready #contact .contact-rows .row {
     opacity: 0.35;
     transform: translateY(24px);
-    will-change: transform, opacity;
-  }
-
-  html.motion-ready #stack .stack-rows .row {
-    opacity: 0.35;
-    transform: translateY(24px);
-    will-change: transform, opacity;
-  }
-
-  html.motion-ready #stack .stack-rows .sep {
-    opacity: 0;
-    will-change: opacity;
-  }
-
-  html.motion-ready #stack .manifest .m-line {
-    opacity: 0.35;
-    transform: translateY(8px);
     will-change: transform, opacity;
   }
 }

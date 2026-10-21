@@ -22,14 +22,12 @@ export function useMotionScope() {
       import('animejs'),
       import('./revealSections'),
       import('./stackStagger'),
-      import('./manifestReveal'),
       import('./workLine'),
     ]).then(
       ([
         anime,
         { initRevealSections },
         { initStackStagger },
-        { initManifestReveal },
         { initWorkLine },
       ]) => {
         if (cancelled) return
@@ -40,7 +38,6 @@ export function useMotionScope() {
         scope.add(() => {
           initRevealSections(document)
           initStackStagger(document)
-          initManifestReveal(document)
           const cleanupWorkLine = initWorkLine(document)
 
           return () => {
