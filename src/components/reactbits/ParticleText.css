@@ -1,12 +1,12 @@
 .particle-text {
   position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.1em;
   overflow: visible;
   touch-action: pan-y;
   isolation: isolate;
+  vertical-align: baseline;
 }
 
 .particle-text__canvas {
@@ -15,6 +15,39 @@
   display: block;
   width: 100%;
   height: 100%;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.particle-text__fallback {
+  position: relative;
+  display: inline-block;
+  color: inherit;
+  font: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  white-space: nowrap;
+}
+
+/* When reduced motion is on, canvas fails, or text is settled into final crisp state */
+.particle-text.is-fallback .particle-text__fallback,
+.particle-text.is-settled .particle-text__fallback {
+  opacity: 1;
+}
+
+.particle-text.is-settled .particle-text__canvas {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.particle-text.is-fallback .particle-text__canvas {
+  display: none;
 }
 
 .particle-text__sr {
@@ -28,3 +61,4 @@
   white-space: nowrap;
   border: 0;
 }
+

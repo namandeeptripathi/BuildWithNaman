@@ -1,6 +1,4 @@
-'use client';
-
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import './ParticleText.css';
 
 export interface ParticleTextProps {
@@ -162,6 +160,12 @@ const ParticleText = ({
   letterSpacing,
   textTransform = 'none',
 }: ParticleTextProps) => {
+  const [isSettled, setIsSettled] = useState(false);
+  const [isFallback, setIsFallback] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  });
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const settingsRef = useRef<Settings | null>(null);
@@ -225,7 +229,10 @@ const ParticleText = ({
     probe.width = 1;
     probe.height = 1;
     const probeCtx = probe.getContext('2d', { willReadFrequently: true });
-    if (!container || !canvas || !ctx || !layerCtx || !probeCtx) return undefined;
+    if (!container || !canvas || !ctx || !layerCtx || !probeCtx) {
+      setIsFallback((prev) => (prev ? prev : true));
+      return undefined;
+    }
 
     const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     let reducedMotion = !!motionQuery?.matches;
@@ -344,6 +351,11 @@ const ParticleText = ({
     const startIntro = (initial: boolean) => {
       const s = settingsRef.current;
       if (!particles.length || !s) return;
+      if (reducedMotion) {
+        setIsSettled(true);
+        return;
+      }
+      setIsSettled(false);
       introMode = s.intro;
       const spread = reducedMotion ? 0 : s.scatter;
       const tall = Math.max(1, bounds.bottom - bounds.top);
@@ -666,7 +678,10 @@ const ParticleText = ({
         buckets[fade * TONES + tone].push(particle);
       }
 
-      if (gathering && complete) gathering = false;
+      if (gathering && complete) {
+        gathering = false;
+        setIsSettled(true);
+      }
       if (bursting && !settling) bursting = false;
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -776,7 +791,10 @@ const ParticleText = ({
 
       const offscreen = document.createElement('canvas');
       const offCtx = offscreen.getContext('2d', { willReadFrequently: true });
-      if (!offCtx) return;
+      if (!offCtx) {
+        setIsFallback(true);
+        return;
+      }
 
       const textToRender =
         s.textTransform === 'uppercase'
@@ -944,6 +962,7 @@ const ParticleText = ({
         startIntro(true);
       } else if (hasIntroRunRef.current || reducedMotion) {
         gathering = false;
+        setIsSettled(true);
         particles.forEach((p) => {
           p.x = p.targetX;
           p.y = p.targetY;
@@ -1072,10 +1091,13 @@ const ParticleText = ({
     };
   }, []);
 
+  const displayedText =
+    textTransform === 'uppercase' ? (text || '').toUpperCase() : text;
+
   return (
     <div
       ref={containerRef}
-      className={`particle-text ${className}`.trim()}
+      className={`particle-text ${isSettled ? 'is-settled' : ''} ${isFallback ? 'is-fallback' : ''} ${className}`.trim()}
       style={style}
     >
       <canvas
@@ -1083,6 +1105,9 @@ const ParticleText = ({
         className="particle-text__canvas"
         aria-hidden="true"
       />
+      <span className="particle-text__fallback" aria-hidden="true">
+        {displayedText}
+      </span>
       <span className="particle-text__sr">{text}</span>
     </div>
   );

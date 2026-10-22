@@ -599,7 +599,9 @@ const CircularCarouselInner = <T extends { title?: string; alt?: string; src?: s
           ? (rect.width / fit) * 0.55 + s.cardW
           : (rect.height / fit) * 0.55 + s.cardH
       stage.style.perspective = `${P}px`
+      ;(stage.style as any).webkitPerspective = `${P}px`
       stage.style.transform = `translate3d(0, ${state.shift}px, 0) scale(${fit})`
+      ;(stage.style as any).webkitTransform = `translate3d(0, ${state.shift}px, 0) scale(${fit})`
     }
     measureRef.current = measure
 

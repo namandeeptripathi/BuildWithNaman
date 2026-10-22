@@ -260,7 +260,7 @@
   background: var(--brass);
   border-color: var(--brass);
   box-shadow: 0 0 12px color-mix(in srgb, var(--brass) 32%, transparent);
-  font-weight: 600;
+  font-weight: 500;
   z-index: 4;
 }
 

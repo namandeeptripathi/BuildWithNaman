@@ -88,15 +88,14 @@ export default function ProjectsCarouselSection() {
       id="work"
       ref={containerRef}
       className="work-scroll-container"
-      aria-label="Selected work 3D carousel"
+      aria-label="Projects 3D carousel"
     >
       <div className="work-sticky-stage">
         <div className="work-editorial-wrapper">
           {/* Compact Editorial Header */}
           <div className="work-editorial-header">
             <div className="work-header-left">
-              <h2 className="label mono">Selected work</h2>
-              <span className="work-header-sub mono">— 3D Ring</span>
+              <h2 className="label mono">Projects</h2>
             </div>
             <div className="work-header-right">
               <div className="work-counter-pills" role="tablist" aria-label="Project tabs">

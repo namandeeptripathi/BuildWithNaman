@@ -76,7 +76,7 @@ export const profile: Profile = {
   tagline:
     'Building practical software products and exploring intelligent solutions to real-world problems.',
   location: 'Mathura, India',
-  kicker: 'Portfolio 2026',
+  kicker: 'Portfolio',
   email: 'namandeeptripathi@gmail.com',
   github: {
     url: 'https://github.com/namandeeptripathi',

@@ -12,7 +12,7 @@ export default function Header({ toggle }: Props) {
       </a>
       <nav aria-label="Sections">
         <a className="nl" href="#about">About</a>
-        <a className="nl" href="#work">Work</a>
+        <a className="nl" href="#work">Projects</a>
         <a className="nl" href="#stack">Stack</a>
         <a className="nl" href="#contact">Contact</a>
         <button

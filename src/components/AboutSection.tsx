@@ -45,58 +45,6 @@ export default function AboutSection() {
         id="about"
         label="About"
         first
-        adornment={
-          /* Subtle technical coordinate / architectural guideline motif in negative space */
-          <div className="about-motif" aria-hidden="true">
-            <svg
-              className="about-motif-svg"
-              viewBox="0 0 160 220"
-              fill="none"
-              aria-hidden="true"
-            >
-              <line
-                className="about-motif-line"
-                x1="8"
-                y1="0"
-                x2="8"
-                y2="180"
-                stroke="var(--brass)"
-                strokeWidth="1"
-                strokeDasharray="2 3"
-              />
-              <g className="about-motif-node" transform="translate(8, 36)">
-                <circle r="3.5" stroke="var(--brass)" strokeWidth="1" fill="var(--bg)" />
-                <circle r="1.5" fill="var(--brass)" />
-              </g>
-              <g className="about-motif-node" transform="translate(8, 126)">
-                <circle r="3.5" stroke="var(--teal)" strokeWidth="1" fill="var(--bg)" />
-                <circle r="1.5" fill="var(--teal)" />
-              </g>
-              <text
-                x="20"
-                y="39"
-                fill="var(--muted)"
-                fontSize="8"
-                fontFamily="var(--font-mono)"
-                letterSpacing="0.12em"
-                className="motif-text"
-              >
-                27.49°N · 77.67°E
-              </text>
-              <text
-                x="20"
-                y="129"
-                fill="var(--muted)"
-                fontSize="8"
-                fontFamily="var(--font-mono)"
-                letterSpacing="0.12em"
-                className="motif-text"
-              >
-                CORE // ARCH_01
-              </text>
-            </svg>
-          </div>
-        }
       >
         {/* Line-by-line masked editorial headline */}
         <h3
