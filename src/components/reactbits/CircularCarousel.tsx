@@ -55,6 +55,7 @@ export interface CircularCarouselProps<T = CircularCarouselItem> {
   style?: React.CSSProperties
 }
 
+
 type Vec3 = [number, number, number]
 
 interface Layout {
@@ -359,8 +360,8 @@ const CircularCarouselInner = <T extends { title?: string; alt?: string; src?: s
   const cameraRef = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
-  const wakeRef = useRef<() => void>(() => {})
-  const measureRef = useRef<() => void>(() => {})
+  const wakeRef = useRef<() => void>(() => { })
+  const measureRef = useRef<() => void>(() => { })
   const activeRef = useRef(0)
   const [active, setActive] = useState(0)
   const [ready, setReady] = useState(true)
@@ -599,9 +600,7 @@ const CircularCarouselInner = <T extends { title?: string; alt?: string; src?: s
           ? (rect.width / fit) * 0.55 + s.cardW
           : (rect.height / fit) * 0.55 + s.cardH
       stage.style.perspective = `${P}px`
-      ;(stage.style as any).webkitPerspective = `${P}px`
       stage.style.transform = `translate3d(0, ${state.shift}px, 0) scale(${fit})`
-      ;(stage.style as any).webkitTransform = `translate3d(0, ${state.shift}px, 0) scale(${fit})`
     }
     measureRef.current = measure
 
@@ -1159,7 +1158,7 @@ const CircularCarouselInner = <T extends { title?: string; alt?: string; src?: s
       setDragging(true)
       try {
         rootRef.current?.setPointerCapture(event.pointerId)
-      } catch {}
+      } catch { }
     }
     const perPixel = 180 / (Math.PI * s.radius * state.fit)
     state.angle = press.angle + (delta - press.origin) * perPixel * (s.layout.inward ? -1 : 1)
